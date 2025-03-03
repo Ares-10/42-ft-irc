@@ -65,7 +65,7 @@ void Server::handleClient(int fd)
 	} else
 	{
 		buffer[bytes] = '\0';
-		std::cout << "Received: " << buffer;
+		std::cout << "Received [Client]: " << buffer;
 		std::string input(buffer);
 		std::istringstream stream(input);
 		std::string line;
@@ -76,6 +76,8 @@ void Server::handleClient(int fd)
 			{
 				try
 				{
+					if (line.back() == '\r')
+						line.erase(line.end() - 1);
 					Command *cmd = _parser->parse(_clients[fd], this, line);
 					if (cmd != NULL)
 						cmd->execute();
@@ -91,8 +93,13 @@ void Server::handleClient(int fd)
 void Server::connectClient()
 {
 	sockaddr_in client_addr;
-	socklen_t client_len = sizeof(client_addr);
-	int client_fd = accept(_server_fd, (struct sockaddr *) &client_addr, &client_len);
+	socklen_t client_len;
+	int client_fd;
+
+	client_len = sizeof(client_addr);
+	client_fd = accept(_server_fd, (struct sockaddr *) &client_addr, &client_len);
+	if (client_fd == -1)
+		std::cout << "accept() error: " << strerror(errno) << std::endl;
 	std::cout << "New client connected!" << std::endl;
 	pollfd new_client = {client_fd, POLLIN, 0};
 	_pfds.push_back(new_client);

@@ -26,5 +26,5 @@ void Client::write(const std::string &message) const
 	std::string buffer = message + "\r\n";
 	if (send(_fd, buffer.c_str(), buffer.length(), 0) < 0)
 		throw std::runtime_error("Error while sending a message to a client!");
-	std::cout << "Send: " << message << std::endl;
+	std::cout << "Send [Server]: " << message << std::endl;
 }

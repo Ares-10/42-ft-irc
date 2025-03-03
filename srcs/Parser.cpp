@@ -38,14 +38,8 @@ Command *Parser::parse(Client *client, Server *server, std::string message)
 		command = new Pong();
 	else if (cmd == "MODE")
 		command = new Mode();
-	else if (cmd == "CAP")
-	{
-		return NULL;
-	}
 	else
-	{
-		throw std::runtime_error("===============err cmd===============");
-	}
+		return NULL;
 	command->setCommand(client, server, params);
 	return command;
 }
