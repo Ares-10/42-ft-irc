@@ -1,121 +1,108 @@
 #include "Server.hpp"
+
 #include "Parser.hpp"
 
 Server::Server(int port, std::string pass)
-	: _password(pass), _parser(new Parser())
-{
-	_server_name = "ft_irc";
-	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (_server_fd == -1)
-		throw std::runtime_error("Socket creation failed");
+    : _password(pass), _parser(new Parser()) {
+  _server_name = "ft_irc";
+  _server_fd = socket(AF_INET, SOCK_STREAM, 0);
+  if (_server_fd == -1) throw std::runtime_error("Socket creation failed");
 
-	sockaddr_in server_addr = {};
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(port);
-	server_addr.sin_addr.s_addr = INADDR_ANY;
+  sockaddr_in server_addr = {};
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(port);
+  server_addr.sin_addr.s_addr = INADDR_ANY;
 
-	if (bind(_server_fd, (struct sockaddr *) &server_addr, sizeof(server_addr)) == -1)
-		throw std::runtime_error("Binding failed");
+  if (bind(_server_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) ==
+      -1)
+    throw std::runtime_error("Binding failed");
 
-	if (listen(_server_fd, 10) == -1)
-		throw std::runtime_error("Listening failed");
+  if (listen(_server_fd, 10) == -1)
+    throw std::runtime_error("Listening failed");
 
-	pollfd server_poll = {_server_fd, POLLIN, 0};
-	_pfds.push_back(server_poll);
+  pollfd server_poll = {_server_fd, POLLIN, 0};
+  _pfds.push_back(server_poll);
 }
 
-void Server::run()
-{
-	std::cout << "Server started..." << std::endl;
+void Server::run() {
+  std::cout << "Server started..." << std::endl;
 
-	while (true)
-	{
-		int ret = poll(_pfds.data(), _pfds.size(), -1);
-		if (ret < 0) throw std::runtime_error("poll() failed");
+  while (true) {
+    int ret = poll(_pfds.data(), _pfds.size(), -1);
+    if (ret < 0) throw std::runtime_error("poll() failed");
 
-		for (size_t i = 0; i < _pfds.size(); ++i)
-		{
-			if (_pfds[i].revents & POLLIN)
-			{
-				if (_pfds[i].fd == _server_fd)
-					connectClient();
-				else
-					handleClient(_pfds[i].fd);
-			}
-		}
-	}
+    for (size_t i = 0; i < _pfds.size(); ++i) {
+      if (_pfds[i].revents & POLLIN) {
+        if (_pfds[i].fd == _server_fd)
+          connectClient();
+        else
+          handleClient(_pfds[i].fd);
+      }
+    }
+  }
 }
 
-void Server::handleClient(int fd)
-{
-	char buffer[512];
-	int bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
-	if (bytes <= 0)
-	{
-		close(fd);
-		for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end(); ++it)
-		{
-			if (it->fd == fd)
-			{
-				_pfds.erase(it);
-				break;
-			}
-		}
-		std::cout << "Client disconnected" << std::endl;
-	} else
-	{
-		buffer[bytes] = '\0';
-		std::cout << "Received: " << buffer;
-		std::string input(buffer);
-		std::istringstream stream(input);
-		std::string line;
+void Server::handleClient(int fd) {
+  char buffer[512];
+  int bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
+  if (bytes <= 0) {
+    close(fd);
+    for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end();
+         ++it) {
+      if (it->fd == fd) {
+        _pfds.erase(it);
+        break;
+      }
+    }
+    std::cout << "Client disconnected" << std::endl;
+  } else {
+    buffer[bytes] = '\0';
+    std::cout << "Received: " << buffer;
+    std::string input(buffer);
+    std::istringstream stream(input);
+    std::string line;
 
-		while (std::getline(stream, line))
-		{
-			if (!line.empty())
-			{
-				try
-				{
-					Command *cmd = _parser->parse(_clients[fd], this, line);
-					if (cmd != NULL)
-						cmd->execute();
-				} catch (std::exception &e)
-				{
-					_clients[fd]->write(e.what());
-				}
-			}
-		}
-	}
+    while (std::getline(stream, line)) {
+      if (!line.empty()) {
+        try {
+          Command *cmd = _parser->parse(_clients[fd], this, line);
+          if (cmd != NULL) cmd->execute();
+          // free
+        } catch (std::exception &e) {
+          _clients[fd]->write(e.what());
+        }
+      }
+    }
+  }
 }
 
-void Server::connectClient()
-{
-	sockaddr_in client_addr;
-	socklen_t client_len = sizeof(client_addr);
-	int client_fd = accept(_server_fd, (struct sockaddr *) &client_addr, &client_len);
-	std::cout << "New client connected!" << std::endl;
-	pollfd new_client = {client_fd, POLLIN, 0};
-	_pfds.push_back(new_client);
+void Server::connectClient() {
+  sockaddr_in client_addr;
+  socklen_t client_len = sizeof(client_addr);
+  int client_fd =
+      accept(_server_fd, (struct sockaddr *)&client_addr, &client_len);
+  std::cout << "New client connected!" << std::endl;
+  pollfd new_client = {client_fd, POLLIN, 0};
+  _pfds.push_back(new_client);
 
-	char hostname[NI_MAXHOST];
-	int res = getnameinfo((struct sockaddr *) &client_addr, client_len, hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV);
-	if (res != 0)
-		throw std::runtime_error("Error while getting a hostname on a new client!");
+  char hostname[NI_MAXHOST];
+  int res = getnameinfo((struct sockaddr *)&client_addr, client_len, hostname,
+                        NI_MAXHOST, NULL, 0, NI_NUMERICSERV);
+  if (res != 0)
+    throw std::runtime_error("Error while getting a hostname on a new client!");
 
-	Client *client = new Client(client_fd, ntohs(client_addr.sin_port), hostname);
-	_clients.insert(std::make_pair(client_fd, client));
+  Client *client = new Client(client_fd, ntohs(client_addr.sin_port), hostname);
+  _clients.insert(std::make_pair(client_fd, client));
 
-	std::cout << client->getHostname().c_str() << ":" << client->getPort() << " has connected." << std::endl;
+  std::cout << client->getHostname().c_str() << ":" << client->getPort()
+            << " has connected." << std::endl;
 }
 
-std::string Server::getServerName() const
-{
-	return _server_name;
-}
+std::string Server::getServerName() const { return _server_name; }
 
-Server::~Server()
-{
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
-		delete it->second;
-	delete _parser;
+Server::~Server() {
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); it++)
+    delete it->second;
+  delete _parser;
 }
