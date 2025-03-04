@@ -61,48 +61,82 @@ void Server::handleClient(int fd) {
     std::string input(buffer);
     std::istringstream stream(input);
     std::string line;
+    void Server::handleClient(int fd) {
+      char buffer[512];
+      int bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
+      if (bytes <= 0) {
+        close(fd);
+        for (std::vector<pollfd>::iterator it = _pfds.begin();
+             it != _pfds.end(); ++it) {
+          if (it->fd == fd) {
+            _pfds.erase(it);
+            break;
+          }
+        }
+        std::cout << "Client disconnected" << std::endl;
+      } else {
+        buffer[bytes] = '\0';
+        std::cout << "Received [Client]: " << buffer;
+        std::string input(buffer);
+        std::istringstream stream(input);
+        std::string line;
 
-    while (std::getline(stream, line)) {
-      if (!line.empty()) {
-        try {
-          Command *cmd = _parser->parse(_clients[fd], this, line);
-          if (cmd != NULL) cmd->execute();
-          // free
-        } catch (std::exception &e) {
-          _clients[fd]->write(e.what());
+        while (std::getline(stream, line)) {
+          if (!line.empty()) {
+            try {
+              if (line.back() == '\r') line.erase(line.end() - 1);
+              Command *cmd = _parser->parse(_clients[fd], this, line);
+              if (cmd != NULL) cmd->execute();
+            } catch (std::exception &e) {
+              _clients[fd]->write(e.what());
+            }
+          }
         }
       }
     }
-  }
-}
 
-void Server::connectClient() {
-  sockaddr_in client_addr;
-  socklen_t client_len = sizeof(client_addr);
-  int client_fd =
-      accept(_server_fd, (struct sockaddr *)&client_addr, &client_len);
-  std::cout << "New client connected!" << std::endl;
-  pollfd new_client = {client_fd, POLLIN, 0};
-  _pfds.push_back(new_client);
+    void Server::connectClient() {
+      sockaddr_in client_addr;
+      socklen_t client_len = sizeof(client_addr);
+      int client_fd =
+          accept(_server_fd, (struct sockaddr *)&client_addr, &client_len);
+      std::cout << "New client connected!" << std::endl;
+      pollfd new_client = {client_fd, POLLIN, 0};
+      _pfds.push_back(new_client);
+      void Server::connectClient() {
+        sockaddr_in client_addr;
+        socklen_t client_len;
+        int client_fd;
 
-  char hostname[NI_MAXHOST];
-  int res = getnameinfo((struct sockaddr *)&client_addr, client_len, hostname,
-                        NI_MAXHOST, NULL, 0, NI_NUMERICSERV);
-  if (res != 0)
-    throw std::runtime_error("Error while getting a hostname on a new client!");
+        client_len = sizeof(client_addr);
+        client_fd =
+            accept(_server_fd, (struct sockaddr *)&client_addr, &client_len);
+        if (client_fd == -1)
+          std::cout << "accept() error: " << strerror(errno) << std::endl;
+        std::cout << "New client connected!" << std::endl;
+        pollfd new_client = {client_fd, POLLIN, 0};
+        _pfds.push_back(new_client);
 
-  Client *client = new Client(client_fd, ntohs(client_addr.sin_port), hostname);
-  _clients.insert(std::make_pair(client_fd, client));
+        char hostname[NI_MAXHOST];
+        int res = getnameinfo((struct sockaddr *)&client_addr, client_len,
+                              hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV);
+        if (res != 0)
+          throw std::runtime_error(
+              "Error while getting a hostname on a new client!");
 
-  std::cout << client->getHostname().c_str() << ":" << client->getPort()
-            << " has connected." << std::endl;
-}
+        Client *client =
+            new Client(client_fd, ntohs(client_addr.sin_port), hostname);
+        _clients.insert(std::make_pair(client_fd, client));
 
-std::string Server::getServerName() const { return _server_name; }
+        std::cout << client->getHostname().c_str() << ":" << client->getPort()
+                  << " has connected." << std::endl;
+      }
 
-Server::~Server() {
-  for (std::map<int, Client *>::iterator it = _clients.begin();
-       it != _clients.end(); it++)
-    delete it->second;
-  delete _parser;
-}
+      std::string Server::getServerName() const { return _server_name; }
+
+      Server::~Server() {
+        for (std::map<int, Client *>::iterator it = _clients.begin();
+             it != _clients.end(); it++)
+          delete it->second;
+        delete _parser;
+      }

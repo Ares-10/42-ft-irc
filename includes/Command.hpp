@@ -10,7 +10,7 @@ class Client;
 
 class Command
 {
-private:
+protected:
 	std::string _prefix;
 	std::string _params;
 
