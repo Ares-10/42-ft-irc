@@ -1,37 +1,33 @@
 #ifndef CLIENT_HPP
-# define CLIENT_HPP
+#define CLIENT_HPP
+
+#include <sys/socket.h>
 
 #include <Server.hpp>
 #include <string>
-#include <sys/socket.h>
 
 #include "Channel.hpp"
 
-enum ClientState
-{
-	HANDSHAKE,
-	LOGIN,
-	REGISTERED,
-	DISCONNECTED
-};
-
+enum ClientState { HANDSHAKE, LOGIN, REGISTERED, DISCONNECTED };
 
 class Client {
-private:
-	int             _fd;
-	int             _port;
+ private:
+  int _fd;
+  int _port;
 
-	std::string     _nickname;
-	std::string     _username;
-	std::string     _realname;
-	std::string     _hostname;
+  // static int _max_channel;  // 가입 가능한 채널의 최대 값. 이거 서버 설정인데
+  // 서버가 가지고 있어야 하나?
 
-	ClientState     _state;
-	Channel*        _channel;
+  std::string _nickname;
+  std::string _username;
+  std::string _realname;
+  std::string _hostname;
 
-public:
+  ClientState _state;
+  Channel* _channel;
 
-	Client(int fd, int port, const std::string &hostname);
+ public:
+  Client(int fd, int port, const std::string& hostname);
 
 	std::string getHostname() const;
 	int getPort() const;
@@ -40,9 +36,7 @@ public:
 
 	void setClientState(ClientState state);
 
-	void write(const std::string& message) const;
+  void write(const std::string& message) const;
 };
 
-
-
-#endif //CLIENT_HPP
+#endif  // CLIENT_HPP
