@@ -102,11 +102,14 @@ void Server::connectClient() {
             << " has connected." << std::endl;
 }
 
+
 std::string Server::getServerName() const { return _server_name; }
 
-Server::~Server() {
-  for (std::map<int, Client *>::iterator it = _clients.begin();
-       it != _clients.end(); it++)
-    delete it->second;
-  delete _parser;
+std::string Server::getPassword() const {	return _password; }
+
+Server::~Server()
+{
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		delete it->second;
+	delete _parser;
 }

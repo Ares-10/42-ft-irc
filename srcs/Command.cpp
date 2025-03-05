@@ -1,14 +1,9 @@
 #include "../includes/Command.hpp"
 
-// Command::Command(Client *client, Server *server, std::string params)
-// 	:_params(params), _client(client), _server(server)
-// {
-// }
-
-
-void Command::setCommand(Client *client, Server *server, std::string params)
+void Command::setCommand(Client *client, Server *server, t_command cmd)
 {
-	_params = params;
+	_command = cmd._command;
+	_args = cmd._args;
 	_client = client;
 	_server = server;
 }

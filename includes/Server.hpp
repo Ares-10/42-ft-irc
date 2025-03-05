@@ -43,6 +43,7 @@ public:
 	void run();
 
 	std::string getServerName() const;
+	std::string getPassword() const;
 };
 
 #endif

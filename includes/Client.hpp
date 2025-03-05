@@ -29,8 +29,12 @@ class Client {
  public:
   Client(int fd, int port, const std::string& hostname);
 
-  std::string getHostname() const;
-  int getPort() const;
+	std::string getHostname() const;
+	int getPort() const;
+	std::string getNickname() const;
+	ClientState getClientState() const;
+
+	void setClientState(ClientState state);
 
   void write(const std::string& message) const;
 };

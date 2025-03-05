@@ -2,9 +2,15 @@
 
 void Join::execute()
 {
-	if (_params == ":")
+	if (_client->getClientState() != REGISTERED)
 	{
-		_client->write(":" + _server->getServerName() + " NOTICE * :*** Looking up your hostname...");
-		_client->write(":" + _server->getServerName() + " 451 * JOIN :You have not registered.");
+		_client->write(":" + _server->getServerName() + " 451 " + _client->getNickname() + " JOIN :You have not registered.");
+		return;
 	}
+	if (_args.size() < 2)
+	{
+		_client->write("461" + this->_client->getNickname() + ":Not enough parameters");
+		return;
+	}
+	// if (_args.size() == 2)
 }
