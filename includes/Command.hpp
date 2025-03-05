@@ -8,17 +8,24 @@
 class Server;
 class Client;
 
+typedef struct s_command
+{
+	std::vector<std::string>	_args;
+	std::string					_command;
+	bool						_invalid_message;
+}	t_command;
+
 class Command
 {
 protected:
-	std::string _prefix;
-	std::string _params;
+	std::vector<std::string>	_args;
+	std::string					_command;
 
 	Client *_client;
 	Server *_server;
 
 public:
-	void setCommand(Client *client, Server *server, std::string params);
+	void setCommand(Client *client, Server *server, t_command cmd);
 
 	virtual void execute() = 0;
 };

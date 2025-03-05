@@ -120,6 +120,11 @@ std::string Server::getServerName() const
 	return _server_name;
 }
 
+std::string Server::getPassword() const
+{
+	return _password;
+}
+
 Server::~Server()
 {
 	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
