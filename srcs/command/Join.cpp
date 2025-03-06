@@ -1,16 +1,12 @@
+#include <Error.hpp>
+
 #include "../../includes/Command.hpp"
 
 void Join::execute()
 {
 	if (_client->getClientState() != REGISTERED)
-	{
-		_client->write(":" + _server->getServerName() + " 451 " + _client->getNickname() + " JOIN :You have not registered.");
-		return;
-	}
+		throw std::runtime_error(Error::err_notregistered(_client->getNickname(), "JOIN"));
 	if (_args.size() < 2)
-	{
-		_client->write("461" + this->_client->getNickname() + ":Not enough parameters");
-		return;
-	}
+		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "JOIN"));
 	// if (_args.size() == 2)
 }
