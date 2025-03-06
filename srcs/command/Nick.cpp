@@ -6,8 +6,8 @@ void Nick::execute()
 {
 	if (_client->getClientState() != LOGIN)
 		throw std::runtime_error(Error::err_needtoauth(_client->getNickname(), "NICK"));
-	if (_args.size() < 1)
-		throw std::runtime_error(Error::err_needtoauth(_client->getNickname(), "NICK"));
+	if (_args.empty())
+		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "NICK"));
 
 	int j = 0;
 	while (_args[0][j])
@@ -17,8 +17,9 @@ void Nick::execute()
 		j++;
 	}
 
-	if (std::find(_server->getClientNicknames().begin(), _server->getClientNicknames().end(), _args[0])
-		!= _server->getClientNicknames().end())
+	std::vector<std::string> clientNicknames = _server->getClientNicknames();
+	if (std::find(clientNicknames.begin(), clientNicknames.end(), _args[0])
+		!= clientNicknames.end())
 		throw std::runtime_error(Error::err_nicknamealreadyuse(_client->getNickname(), _args[0], "NICK"));
 
 	_client->setNickname(_args[0]);
