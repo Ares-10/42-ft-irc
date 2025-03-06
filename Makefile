@@ -5,6 +5,7 @@ SRCS =  srcs/main.cpp				\
 		srcs/Client.cpp				\
 		srcs/Channel.cpp			\
 		srcs/Parser.cpp				\
+		srcs/Error.cpp				\
 		srcs/Command.cpp			\
 		srcs/command/Join.cpp		\
 		srcs/command/Kick.cpp		\
@@ -23,7 +24,7 @@ OBJS = $(SRCS:.cpp=.o)
 
 INC_DIR = ./includes
 
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98
+#CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 
 
 
