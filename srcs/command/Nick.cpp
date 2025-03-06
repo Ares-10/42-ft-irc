@@ -22,6 +22,8 @@ void Nick::execute()
 		!= clientNicknames.end())
 		throw std::runtime_error(Error::err_nicknamealreadyuse(_client->getNickname(), _args[0], "NICK"));
 
+	if (!_client->getNickname().empty())
+		_server->removeClientNickname(_client->getNickname());
 	_client->setNickname(_args[0]);
 	_server->addClientNickname(_client->getNickname());
 	if (!_client->getUsername().empty())

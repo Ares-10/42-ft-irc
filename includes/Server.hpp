@@ -49,6 +49,7 @@ public:
 	std::vector<std::string> getClientNicknames() const;
 
 	void addClientNickname(const std::string &nickname);
+	void removeClientNickname(const std::string &nickname);
 
 	void sendMessage(const Client *client, const std::string &message) const;
 	void sendMessage(const Client *client, const std::string &num, const std::string &message) const;

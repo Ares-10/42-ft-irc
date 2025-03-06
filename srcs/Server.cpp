@@ -126,6 +126,11 @@ std::vector<std::string> Server::getClientNicknames() const { return _client_nic
 
 void Server::addClientNickname(const std::string &nickname) { _client_nicknames.push_back(nickname); }
 
+void Server::removeClientNickname(const std::string &nickname)
+{
+	_client_nicknames.erase(std::find(_client_nicknames.begin(), _client_nicknames.end(), nickname));
+}
+
 Server::~Server()
 {
 	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
