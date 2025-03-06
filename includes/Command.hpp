@@ -4,6 +4,7 @@
 #include "Client.hpp"
 #include "Parser.hpp"
 #include "Server.hpp"
+#include "Error.hpp"
 
 class Server;
 class Client;

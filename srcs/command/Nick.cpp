@@ -1,5 +1,3 @@
-#include <Error.hpp>
-
 #include "../../includes/Command.hpp"
 
 void Nick::execute()
