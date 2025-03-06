@@ -31,6 +31,7 @@ class Client {
 
 	std::string getHostname() const;
 	int getPort() const;
+  int getFd() const;
 	std::string getNickname() const;
 	ClientState getClientState() const;
 

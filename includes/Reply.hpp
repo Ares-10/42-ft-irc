@@ -18,6 +18,22 @@ class Reply {
                                     const std::string &channel_name,
                                     const std::string &nick_name,
                                     const std::string &setat);
+
+
+// 다시 생각해보기 (channel에 접속한 namelist필요)
+    // 353 : 명령 에 대한 응답으로 전송되는 NAMES이 숫자는 해당 채널에 가입된 클라이언트 <channel>와 해당 채널의 상태를 나열합니다.
+static std::string rpl_invitelist(const std::string &client_name,
+                                    const std::string &channel_name,
+                                    const std::string &nick_name,
+                                    const std::string &setat);
+
+
+
+// 366 : ent as a reply to the NAMES command, this numeric specifies the end of a list of channel member names.
+static std::string rpl_endofname(const std::string &client_name, const std::string &channel_name);
+
 };
+
+
 
 #endif
