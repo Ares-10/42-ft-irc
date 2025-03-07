@@ -100,3 +100,15 @@ void Channel::setOpTopicOnly(bool topic_opt) {
 void Channel::setKeyOnly(bool key_opt) {
   _key_only = key_opt;
 }
+
+
+bool Channel::checkChannelNameFormat(const std::string &channel_name){
+  if (channel_name.length() < 1 || channel_name[0] != '#')
+    return false;
+  for (size_t i = 1; i < channel_name.length(); i++)
+  {
+    if (channel_name[i] == ' ' || !std::isprint(channel_name[i]))
+      return false;
+  }
+  return true;
+}

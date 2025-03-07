@@ -57,6 +57,8 @@ class Channel {
   void setOpTopicOnly(bool topic_opt);
   void setKeyOnly(bool key_opt);
 
+  static bool checkChannelNameFormat(const std::string &channel_name);
+  static bool checkChannelKeyFormat(const std::string &channel_name);
 };
 
 #endif  // CHANNEL_HPP

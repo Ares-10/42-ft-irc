@@ -4,6 +4,8 @@
 #include "Client.hpp"
 #include "Parser.hpp"
 #include "Server.hpp"
+#include "Error.hpp"
+#include "Reply.hpp"
 
 class Server;
 class Client;
@@ -56,6 +58,12 @@ public:
 
 class Join : public Command
 {
+private: 
+	std::vector<std::string> _channel;
+	std::vector<std::string> _key;
+
+	void makeChannelVec();
+	void makeKeyVec();
 public:
 	void execute();
 };

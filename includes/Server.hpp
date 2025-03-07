@@ -27,6 +27,7 @@ private:
 	std::string _password;
 	std::vector<pollfd> _pfds;
 	std::map<int, Client *> _clients;
+	std::map<int, Channel *> _channels;
 
 	std::string _server_name;
 
