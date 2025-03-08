@@ -28,6 +28,8 @@ private:
 	std::vector<pollfd> _pfds;
 	std::map<int, Client *> _clients;
 
+	std::vector<std::string> _client_nicknames;
+
 	std::string _server_name;
 
 	Parser *_parser;
@@ -44,6 +46,14 @@ public:
 
 	std::string getServerName() const;
 	std::string getPassword() const;
+	std::vector<std::string> getClientNicknames() const;
+
+	void addClientNickname(const std::string &nickname);
+	void removeClientNickname(const std::string &nickname);
+	void removeClient(Client *client);
+
+	void sendMessage(const Client *client, const std::string &message) const;
+	void sendMessage(const Client *client, const std::string &num, const std::string &message) const;
 };
 
 #endif
