@@ -50,6 +50,7 @@ public:
 
 	void addClientNickname(const std::string &nickname);
 	void removeClientNickname(const std::string &nickname);
+	void removeClient(Client *client);
 
 	void sendMessage(const Client *client, const std::string &message) const;
 	void sendMessage(const Client *client, const std::string &num, const std::string &message) const;

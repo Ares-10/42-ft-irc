@@ -33,6 +33,7 @@ class Client {
  public:
   Client(int fd, int port, const std::string& hostname);
 
+	int getFd() const;
 	int getPort() const;
 	std::string getNickname() const;
 	std::string getUsername() const;

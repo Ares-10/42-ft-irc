@@ -150,3 +150,20 @@ void Server::sendMessage(const Client *client, const std::string &num, const std
 		nickname = "*";
 	sendMessage(client, num + " " + nickname + " " + message + "\n");
 }
+
+void Server::removeClient(Client *client)
+{
+	int fd = client->getFd();
+	close(fd);
+	for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end();++it)
+	{
+		if (it->fd == fd)
+		{
+			_pfds.erase(it);
+			break;
+		}
+	}
+	removeClientNickname(client->getNickname());
+	_clients.erase(fd);
+	std::cout << "Client disconnected (removeClient())" << std::endl;
+}
