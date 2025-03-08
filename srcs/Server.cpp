@@ -67,7 +67,7 @@ void Server::handleClient(int fd)
 	} else
 	{
 		buffer[bytes] = '\0';
-		std::cout << "Received [Client]: " << buffer;
+		std::cout << "Received [Client(" << _clients[fd]->getNickname() << ")]: " << buffer;
 		std::string input(buffer);
 		std::istringstream stream(input);
 		std::string line;
@@ -155,7 +155,7 @@ void Server::removeClient(Client *client)
 {
 	int fd = client->getFd();
 	close(fd);
-	for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end();++it)
+	for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end(); ++it)
 	{
 		if (it->fd == fd)
 		{
