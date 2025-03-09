@@ -112,3 +112,7 @@ bool Channel::checkChannelNameFormat(const std::string &channel_name){
   }
   return true;
 }
+
+// bool Channel::checkChannelKeyFormat(const std::string &channel_key) { // mode +k 시
+//   if (channel_key.length() < 1 || channel_key)
+// }

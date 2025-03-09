@@ -2,10 +2,10 @@
 #define CHANNEL_HPP
 
 #include "Client.hpp"
-#include "Server.hpp"
+// #include "Server.hpp"
 #include <limits>
 
-class Server;
+// class Server;
 class Client;
 
 class Channel {
@@ -58,7 +58,7 @@ class Channel {
   void setKeyOnly(bool key_opt);
 
   static bool checkChannelNameFormat(const std::string &channel_name);
-  static bool checkChannelKeyFormat(const std::string &channel_name);
+  static bool checkChannelKeyFormat(const std::string &channel_name); // mode +k 일 때
 };
 
 #endif  // CHANNEL_HPP
