@@ -6,7 +6,7 @@ Channel::Channel(Server *server, Client *client, const std::string &channel_name
     _channel_mode = "";
     _client_limit = std::numeric_limits<unsigned int>::max();
     _client_number = 1;
-    _op_topic_only = false;
+    _op_topic_only = true;
     _key_only = false;
 
     _clients[client->getFd()] = client;
@@ -18,8 +18,8 @@ Channel::Channel(Server *server, const std::string &channel_name) : _server(serv
     _channel_key = "";
     _channel_mode = "";
     _client_limit = std::numeric_limits<unsigned int>::max();
-    _client_number = 1;
-    _op_topic_only = false;
+    _client_number = 0;
+    _op_topic_only = true;
     _key_only = false;
 }
 

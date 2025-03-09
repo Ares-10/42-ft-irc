@@ -39,6 +39,19 @@ void Join::execute()
 		if (!channel_ptr) {
 			// 해당 channel이 server에 없음. => create channel // 미완
 			Channel *new_channel = new Channel(_server, _client, _channels[i]);
+			_server->addChannel(new_channel);
+			if (_keys.size() > i) // 이 부분 libera랑 inspircd(irssi에서 시도 시 알아서 제거하여 전송)에서는 필요없는 듯 => 없애도 될듯..
+			{
+				new_channel->setKeyOnly(true);
+				new_channel->setChannelKey(_keys[i]);
+			}
+
+			// 353 :  symbol부분은 '=' 공개 채널, '@' 는 secret channel인데 우린 +s 옵션을 기본으로 생각했으므로 '@' 로 함.
+			std::string names_str = ":" + _server->getServerName() + " 353" + _client->getNickname() + " @ " + new_channel->getChannelName() + " :";
+			// // 미완 user 쭉 넣기.
+			// _client->write();
+			// 366
+			_client->write(":" + _server->getServerName() + " 366 " + _client->getNickname() + " " + new_channel->getChannelName() + " :End of /NAMES list");
 		}
 		else
 		{
@@ -61,7 +74,7 @@ void Join::makeChannelVec()
 				if (Channel::checkChannelNameFormat(channel_str))
 					_channels.push_back(channel_str);
 				else
-				{	// 403
+				{	// 403 원래는 476이어야 할 것 같은데, libera에서는 403을 뱉음.
 					_client->write(":" + _server->getServerName() + " " + Error::err_nosuchchannel(_client->getNickname(), channel_str));
 				}
 			}
@@ -102,7 +115,6 @@ void Join::makeKeyVec()
 			if (pos < i)
 			{
 				key_str = _args[2].substr(pos, i - pos);
-				// if (key_str.length() > 0)
 					_keys.push_back(key_str);
 			}
 			pos = i + 1;
