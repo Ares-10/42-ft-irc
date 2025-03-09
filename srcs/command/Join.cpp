@@ -32,8 +32,19 @@ void Join::execute()
 	this->makeChannelVec();
 	if (_args.size() == 3) // key 존재
 		this->makeKeyVec();
-
-
+	
+	// join 수행.
+	for (size_t i = 0; i < _channels.size(); i++) {
+		Channel *channel_ptr = _server->findChannel(_channels[i]);
+		if (!channel_ptr) {
+			// 해당 channel이 server에 없음. => create channel // 미완
+			Channel *new_channel = new Channel(_server, _client, _channels[i]);
+		}
+		else
+		{
+			// 해당 channel이 이미 존재.
+		}
+	}
 }
 
 void Join::makeChannelVec()
@@ -70,7 +81,7 @@ void Join::makeChannelVec()
 }
 
 
-void Join::makeKeyVec() // 수정해야함.
+void Join::makeKeyVec() 
 {
 	size_t pos = 0;
 	std::string key_str;

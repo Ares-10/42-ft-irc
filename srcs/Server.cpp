@@ -136,6 +136,10 @@ Server::~Server()
 	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		delete it->second;
 	delete _parser;
+
+	// Channel부분 new로 만든다고 가정.
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+		delete it->second;
 }
 
 void Server::sendMessage(const Client *client, const std::string &message) const
@@ -182,7 +186,7 @@ bool Server::addChannel(Channel *channel)
 	}
 }
 
-bool Server::removeChannel(std::string channel_name)
+bool Server::removeChannel(std::string channel_name) // findChannel을 이용할 걸 그랬나..
 {
 	std::map<std::string, Channel *>::iterator it =	_channels.find(channel_name);
 	if (it != _channels.end()) // 존재함.
@@ -196,4 +200,13 @@ bool Server::removeChannel(std::string channel_name)
 		std::cout << "removeChannel : channel " << channel_name << " does not exist!\n";
 		return false;
 	}
+}
+
+Channel *Server::findChannel(const std::string &channel_name)
+{
+	std::map<std::string, Channel *>::iterator it =	_channels.find(channel_name);
+	if (it != _channels.end()) {
+		return it->second;
+	}
+	else return NULL;
 }
