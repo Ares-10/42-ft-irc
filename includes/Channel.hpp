@@ -62,9 +62,15 @@ class Channel {
   bool increaseClientNumber();
   bool decreaseClientNumber();
 
-  bool removeClient(int fd); // client fd // 이거 쓴다음 꼭 _client_number 수 확인하기.
-  bool removeOperator(int fd); // client fd
-  bool removeInvitedClient(int fd);
+  bool removeClient(int client_fd); // client_fd // 이거 쓴다음 꼭 _client_number 수 확인하기.
+  bool removeOperator(int client_fd); // client_fd
+  bool removeInvitedClient(int client_fd);
+
+  Client* invited_clientsFind(int client_fd);
+  Client* clientsFind(int client_fd);
+  Client* operatorsFind(int client_fd);
+
+  std::map<std::string, bool> getClientNamesWithPrefix(); // client_name : {@(true), not operator(false)}
 
   static bool checkChannelNameFormat(const std::string &channel_name);
   // static bool checkChannelKeyFormat(const std::string &channel_name); // mode +k 일 때

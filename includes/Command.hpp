@@ -110,5 +110,12 @@ public:
 	void execute();
 };
 
+class Names : public Command
+{
+public:
+	void execute();
+};
+
+
 
 #endif //COMMAND_HPP

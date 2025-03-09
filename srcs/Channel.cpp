@@ -116,8 +116,8 @@ bool Channel::decreaseClientNumber() {
 }
 
 
-bool Channel::removeClient(int fd) { // 이거 쓴다음 꼭 _client_number 수 확인하기.
-  std::map<int, Client *>::iterator it = _clients.find(fd);
+bool Channel::removeClient(int client_fd) { // 이거 쓴다음 꼭 _client_number 수 확인하기.
+  std::map<int, Client *>::iterator it = _clients.find(client_fd);
   if (it != _clients.end())
   {
     _clients.erase(it);
@@ -127,8 +127,8 @@ bool Channel::removeClient(int fd) { // 이거 쓴다음 꼭 _client_number 수 
   return false; // 못찾음. (삭제 실패)
 } 
 
-bool Channel::removeOperator(int fd) {
-  std::map<int, Client *>::iterator it = _operators.find(fd);
+bool Channel::removeOperator(int client_fd) {
+  std::map<int, Client *>::iterator it = _operators.find(client_fd);
   if (it != _operators.end())
   {
     _operators.erase(it);
@@ -137,8 +137,8 @@ bool Channel::removeOperator(int fd) {
   return false; // 못찾음. (삭제 실패)
 } 
 
-bool Channel::removeInvitedClient(int fd) {
-  std::map<int, Client *>::iterator it = _invited_clients.find(fd);
+bool Channel::removeInvitedClient(int client_fd) {
+  std::map<int, Client *>::iterator it = _invited_clients.find(client_fd);
   if (it != _invited_clients.end())
   {
     _invited_clients.erase(it);
@@ -147,6 +147,37 @@ bool Channel::removeInvitedClient(int fd) {
   return false; // 못찾음. (삭제 실패)
 } 
 
+
+Client* Channel::invited_clientsFind(int client_fd) {
+    std::map<int, Client *>::iterator it = _invited_clients.find(client_fd);
+    return (it != _invited_clients.end()) ? it->second : NULL;
+}
+
+Client* Channel::clientsFind(int client_fd) {
+    std::map<int, Client *>::iterator it = _clients.find(client_fd);
+    return (it != _clients.end()) ? it->second : NULL;
+}
+
+Client* Channel::operatorsFind(int client_fd) {
+    std::map<int, Client *>::iterator it = _operators.find(client_fd);
+    return (it != _operators.end()) ? it->second : NULL;
+}
+
+
+std::map<std::string, bool> Channel::getClientNamesWithPrefix()
+{
+  std::map<std::string, bool> return_map;
+  for (std::map<int, Client *>::iterator it = _operators.begin(); it != _operators.end(); it++) // operator
+	{
+    return_map[it->second->getNickname()] = true;
+	}
+  for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++) // client
+	{
+    if (return_map.find(it->second->getNickname()) == return_map.end()) // 없다면,
+      return_map[it->second->getNickname()] = false;
+	}
+  return return_map;
+}
 
 
 

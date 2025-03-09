@@ -21,7 +21,7 @@ class Client {
   // static int _max_channel;  // 가입 가능한 채널의 최대 값. 이거 서버 설정인데
   // 서버가 가지고 있어야 하나?
 
-  std::string _nickname;
+  std::string _nickname; // 이거 유일해야함.
   std::string _username;
   std::string _realname;
   std::string _hostname;

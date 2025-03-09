@@ -27,6 +27,7 @@ void Join::execute()
 		command->setCommand(_client, _server, cmd);
 		command->execute();
 		delete command;
+		return ;
 	}
 	// channel부분 잘라내기.
 	this->makeChannelVec();
@@ -46,10 +47,23 @@ void Join::execute()
 				new_channel->setChannelKey(_keys[i]);
 			}
 
-			// 353 :  symbol부분은 '=' 공개 채널, '@' 는 secret channel인데 우린 +s 옵션을 기본으로 생각했으므로 '@' 로 함.
-			std::string names_str = ":" + _server->getServerName() + " 353" + _client->getNickname() + " @ " + new_channel->getChannelName() + " :";
-			// // 미완 user 쭉 넣기.
-			// _client->write();
+			// names 부분
+			if (new_channel->clientsFind(_client->getFd())) // 원래 여기서는 필요없지만 NAMES를 위해.
+			{
+				// 353 :  symbol부분은 '=' 공개 채널, '@' 는 secret channel인데 우린 +s 옵션을 기본으로 생각했으므로 '@' 로 함.
+				std::string names_str = ":" + _server->getServerName() + " 353" + _client->getNickname() + " @ " + new_channel->getChannelName() + " :";
+				// // user 쭉 넣기.
+				std::map<std::string, bool> user_map = new_channel->getClientNamesWithPrefix();
+				for (std::map<std::string, bool>::iterator it = user_map.begin(); it != user_map.end(); it++)
+				{
+					if (it->second == true) // operator
+						names_str += "@";
+					names_str += it->first;
+					if (std::next(it) != user_map.end())
+						names_str += " ";
+				}
+				_client->write(names_str);
+			}
 			// 366
 			_client->write(":" + _server->getServerName() + " 366 " + _client->getNickname() + " " + new_channel->getChannelName() + " :End of /NAMES list");
 		}
