@@ -1,3 +1,5 @@
+#include <Error.hpp>
+
 #include "../../includes/Command.hpp"
 
 void Join::execute()

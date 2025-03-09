@@ -41,7 +41,38 @@ class Error {
                                      const std::string &command);
 
 
+
     // 525 : channel key가 올바른 format이 아닐 떄.. <- 이거 왜 발동안댐 ㅋㅋ.
+
+
+// 462
+std::string err_unauthorizedcommand(const std::string &client_name,const std::string &command);
+
+// 431
+std::string err_nonicknamegiven(const std::string &client_name, const std::string &command);
+
+// 432
+std::string err_erroneousnickname(const std::string &client_name,
+										const std::string &nickname,
+										const std::string &command);
+
+// 433
+std::string Error::err_nicknamealreadyuse(const std::string &client_name,
+										const std::string &nickname,
+										const std::string &command);
+
+
+	// 451 : 클라이언트가 서버에 등록되지 않음
+	static std::string err_notregistered(const std::string &client_name,
+										const std::string &command);
+
+	// 997 : 잘못된 비밀번호
+	static std::string err_incorrectpassword(const std::string &client_name,
+											const std::string &command);
+
+	// 998 : You need to authenticate first
+	static std::string err_needtoauth(const std::string &client_name,
+									const std::string &command);
 };
 
 #endif
