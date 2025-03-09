@@ -14,18 +14,18 @@ class Reply {
   // 333 : <nick>클라이언트에게 주제를 설정한 사람( )과 주제를 설정한 시점(
   // <setat>유닉스 타임스탬프)을 알리기 위해 전송됨 . 전송 후 .RPL_TOPIC (332)
   // => 다시 작성하기 번역본 이상해 + setat이 뭔데...
-  static std::string rpl_invitelist(const std::string &client_name,
-                                    const std::string &channel_name,
-                                    const std::string &nick_name,
-                                    const std::string &setat);
+//   static std::string rpl_invitelist(const std::string &client_name,
+//                                     const std::string &channel_name,
+//                                     const std::string &nick_name,
+//                                     const std::string &setat);
 
 
 // 다시 생각해보기 (channel에 접속한 namelist필요)
     // 353 : 명령 에 대한 응답으로 전송되는 NAMES이 숫자는 해당 채널에 가입된 클라이언트 <channel>와 해당 채널의 상태를 나열합니다.
-static std::string rpl_invitelist(const std::string &client_name,
-                                    const std::string &channel_name,
-                                    const std::string &nick_name,
-                                    const std::string &setat);
+// static std::string rpl_invitelist(const std::string &client_name,
+//                                     const std::string &channel_name,
+//                                     const std::string &nick_name,
+//                                     const std::string &setat);
 
 
 

@@ -16,9 +16,11 @@
 
 #include "Client.hpp"
 #include "Parser.hpp"
+#include "Channel.hpp"
 
 class Client;
 class Parser;
+class Channel;
 
 class Server
 {
@@ -27,7 +29,7 @@ private:
 	std::string _password;
 	std::vector<pollfd> _pfds;
 	std::map<int, Client *> _clients;
-	std::map<int, Channel *> _channels;
+	std::map<std::string, Channel *> _channels; // key : channel_name
 
 	std::vector<std::string> _client_nicknames;
 
@@ -52,6 +54,9 @@ public:
 	void addClientNickname(const std::string &nickname);
 	void removeClientNickname(const std::string &nickname);
 	void removeClient(Client *client);
+
+	bool addChannel(Channel *channel);
+	bool removeChannel(std::string channel_name); // &는 혹시 문제가 될 수 있으므로.. (del 후에)
 
 	void sendMessage(const Client *client, const std::string &message) const;
 	void sendMessage(const Client *client, const std::string &num, const std::string &message) const;

@@ -167,3 +167,33 @@ void Server::removeClient(Client *client)
 	_clients.erase(fd);
 	std::cout << "Client disconnected (removeClient())" << std::endl;
 }
+
+bool Server::addChannel(Channel *channel)
+{
+	std::map<std::string, Channel *>::iterator it =	_channels.find(channel->getChannelName());
+	if (it != _channels.end()) //이미 있음.
+	{
+		std::cout << "addChannel : channel " << channel->getChannelName() << " already exist!\n";
+		return false;
+	}
+	else {
+		_channels[channel->getChannelName()] = channel;
+		return true;
+	}
+}
+
+bool Server::removeChannel(std::string channel_name)
+{
+	std::map<std::string, Channel *>::iterator it =	_channels.find(channel_name);
+	if (it != _channels.end()) // 존재함.
+	{
+		delete it->second; // channel 삭제
+		_channels.erase(it);
+		return true;
+	}
+	else 
+	{
+		std::cout << "removeChannel : channel " << channel_name << " does not exist!\n";
+		return false;
+	}
+}

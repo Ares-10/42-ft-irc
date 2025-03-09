@@ -3,11 +3,11 @@
 #include <iostream>
 
 Client::Client(int fd, int port, const std::string &hostname)
-	: _fd(fd), _port(port), _hostname(hostname), _state(HANDSHAKE), _channel(NULL)
+	: _fd(fd), _port(port), _hostname(hostname), _state(HANDSHAKE)
 {
 	(void) _fd;
 	(void) _state;
-	(void) _channel;
+	(void) _channels;
 }
 
 void Client::write(const std::string &message) const
@@ -63,6 +63,15 @@ ClientState Client::getClientState() const
 	return _state;
 }
 
+std::vector<std::string> Client::getChannelNames() const {
+	std::vector<std::string> channel_names;
+	for (std::vector<Channel *>::const_iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		channel_names.push_back((*it)->getChannelName());
+	}
+	return channel_names;
+}
+
 void Client::setClientState(ClientState state)
 {
 	this->_state = state;
@@ -91,4 +100,45 @@ void Client::setHostname(const std::string &hostname)
 void Client::setId(const std::string &id)
 {
 	_id = id;
+}
+
+
+std::string Client::quitChannel(const std::string &channel_name)
+{
+	for (std::vector<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if ((*it)->getChannelName() == channel_name)
+		{
+			Channel *temp = *it;
+			_channels.erase(it); // client에서 해당 channel연결 해제.
+			if (temp->removeClient(_fd)) // channel에서 해당 유저 삭제.
+			{
+				temp->removeOperator(_fd);
+				// 삭제 성공 
+				// 구현 해야함.
+			}
+			else {
+				std::cout << "quitChannel : " << channel_name << " 삭제 실패 (해당하는 channel이 없음.)\n";
+			}
+		}
+	}
+	return ""; // client가 해당 channel에 있지 않음.
+}
+
+
+void Client::quitAllChannel() {
+	for (std::vector<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		Channel *temp = *it;
+			_channels.erase(it); // client에서 해당 channel연결 해제.
+			if (temp->removeClient(_fd)) // channel에서 해당 유저 삭제.
+			{
+				temp->removeOperator(_fd);
+				// 삭제 성공 
+				// 구현 해야함.
+			}
+			else {
+				std::cout << "quitAllChannel : " << temp->getChannelName() << " 삭제 실패 (해당하는 channel이 없음.)\n";
+			}
+	}
 }

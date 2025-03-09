@@ -2,10 +2,11 @@
 #define CHANNEL_HPP
 
 #include "Client.hpp"
-// #include "Server.hpp"
+#include "Server.hpp"
 #include <limits>
+#include <map>
 
-// class Server;
+class Server;
 class Client;
 
 class Channel {
@@ -23,6 +24,7 @@ class Channel {
   std::map<int, Client *> _clients;   // channel client
   std::map<int, Client *> _operators;  // channel operator
 
+  Server *_server;
   unsigned int _client_limit;
   unsigned int _client_number;
   bool _op_topic_only;
@@ -30,8 +32,8 @@ class Channel {
 
 
   public:
-    Channel(const std::string &channel_name);
-    Channel(Client * client, const std::string &channel_name);
+    Channel(Server *server, const std::string &channel_name);
+    Channel(Server *server, Client * client, const std::string &channel_name);
 
 
   // Getters
@@ -53,12 +55,19 @@ class Channel {
   void setChannelKey(const std::string &channel_key);
   void setChannelMode(const std::string &channel_mode);
   void setClientLimit(unsigned int client_limit);
-  void setClientNumber(unsigned int client_number);
+  // void setClientNumber(unsigned int client_number); 이거 대신 inc, dec 만들어야할듯.
   void setOpTopicOnly(bool topic_opt);
   void setKeyOnly(bool key_opt);
 
+  bool increaseClientNumber();
+  bool decreaseClientNumber();
+
+  bool removeClient(int fd); // client fd // 이거 쓴다음 꼭 _client_number 수 확인하기.
+  bool removeOperator(int fd); // client fd
+  bool removeInvitedClient(int fd);
+
   static bool checkChannelNameFormat(const std::string &channel_name);
-  static bool checkChannelKeyFormat(const std::string &channel_name); // mode +k 일 때
+  // static bool checkChannelKeyFormat(const std::string &channel_name); // mode +k 일 때
 };
 
 #endif  // CHANNEL_HPP

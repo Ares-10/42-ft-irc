@@ -57,7 +57,7 @@ std::string err_erroneousnickname(const std::string &client_name,
 										const std::string &command);
 
 // 433
-std::string Error::err_nicknamealreadyuse(const std::string &client_name,
+std::string err_nicknamealreadyuse(const std::string &client_name,
 										const std::string &nickname,
 										const std::string &command);
 

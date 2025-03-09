@@ -59,8 +59,8 @@ public:
 class Join : public Command
 {
 private: 
-	std::vector<std::string> _channel;
-	std::vector<std::string> _key;
+	std::vector<std::string> _channels;
+	std::vector<std::string> _keys;
 
 	void makeChannelVec();
 	void makeKeyVec();

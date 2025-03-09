@@ -13,9 +13,20 @@ void Join::execute()
 	if (_args.size() > 3) // 암 것도 안함.
 		return ;
 	
-	if (_args.size() == 2 && _args[1] == "0") {
-		// channel 다 나감.
-		// _client.
+	if (_args.size() == 2 && _args[1] == "0") {	// channel 다 나감. (part 이용)
+		std::vector<std::string> channel_names = _client->getChannelNames();
+		t_command cmd;
+		cmd._invalid_message = false;
+		cmd._command = "PART";
+		cmd._args.push_back("PART");
+		for (std::vector<std::string>::iterator it = channel_names.begin(); it != channel_names.end(); it++)
+		{
+			cmd._args.push_back(*it);
+		}
+		Command * command = new Part();
+		command->setCommand(_client, _server, cmd);
+		command->execute();
+		delete command;
 	}
 	// channel부분 잘라내기.
 	this->makeChannelVec();
@@ -37,7 +48,7 @@ void Join::makeChannelVec()
 			{
 				channel_str = _args[1].substr(pos, i - pos);
 				if (Channel::checkChannelNameFormat(channel_str))
-					_channel.push_back(channel_str);
+					_channels.push_back(channel_str);
 				else
 				{	// 403
 					_client->write(":" + _server->getServerName() + " " + Error::err_nosuchchannel(_client->getNickname(), channel_str));
@@ -49,7 +60,7 @@ void Join::makeChannelVec()
 		{
 			channel_str = _args[1].substr(pos, i - pos + 1);
 			if (Channel::checkChannelNameFormat(channel_str))
-				_channel.push_back(channel_str);
+				_channels.push_back(channel_str);
 			else
 			{	// 403
 				_client->write(":" + _server->getServerName() + " " + Error::err_nosuchchannel(_client->getNickname(), channel_str));
@@ -81,14 +92,14 @@ void Join::makeKeyVec() // 수정해야함.
 			{
 				key_str = _args[2].substr(pos, i - pos);
 				// if (key_str.length() > 0)
-					_key.push_back(key_str);
+					_keys.push_back(key_str);
 			}
 			pos = i + 1;
 		}
 		else if (i == _args[2].length() -1 && pos <= i && _args[1][i] != ',')
 		{
 			key_str = _args[2].substr(pos, i - pos + 1);
-			_key.push_back(key_str);
+			_keys.push_back(key_str);
 		}
 	}
 }
