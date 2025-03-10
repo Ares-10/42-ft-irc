@@ -21,16 +21,15 @@ class Channel {
   // 제한 사항은 공백 (' ', 0x20), 제어 문자 G / BELL ('^G',
   // 0x07)또는 쉼표 (',', 0x2C)(프로토콜에서 목록 항목 구분
   // 기호로 사용됨)를 포함할 수 없다는 것입니다.
-  std::map<int, Client *>
-      _invited_clients;  // client_fd  : Client * (초대받은 사람)
+
+  // client_fd  : Client * (초대받은 사람)
+  std::map<int, Client *> _invited_clients;
   std::map<int, Client *> _clients;    // channel client
   std::map<int, Client *> _operators;  // channel operator
 
   Server *_server;
   unsigned int _client_limit;
   unsigned int _client_number;
-  bool _op_topic_only;
-  bool _key_only;
 
  public:
   Channel(Server *server, const std::string &channel_name);
@@ -47,9 +46,6 @@ class Channel {
   unsigned int getClientLimit() const;
   unsigned int getClientNumber() const;
 
-  bool isOpTopicOnly() const;
-  bool isKeyOnly() const;
-
   // Setters
   void setChannelTopic(const std::string &channel_topic);
   void setChannelKey(const std::string &channel_key);
@@ -58,8 +54,6 @@ class Channel {
   void setClientLimit(unsigned int client_limit);
   // void setClientNumber(unsigned int client_number); 이거 대신 inc, dec
   // 만들어야할듯.
-  void setOpTopicOnly(bool topic_opt);
-  void setKeyOnly(bool key_opt);
 
   bool increaseClientNumber();
   bool decreaseClientNumber();
@@ -69,10 +63,12 @@ class Channel {
   bool removeOperator(int client_fd);  // client_fd
   bool removeInvitedClient(int client_fd);
 
-// 이거 return값이랑 인자 생각 좀 해봐야 할 듯. 리턴값 필요할 거 같음. 그리고 하나 하나 옵션 체크도 해야할 수 도..
+  // 이거 return값이랑 인자 생각 좀 해봐야 할 듯. 리턴값 필요할 거 같음. 그리고
+  // 하나 하나 옵션 체크도 해야할 수 도..
   void removeChannelMode(const std::string &channel_mode);
-
   void addChannelMode(const std::string &channel_mode);
+  bool findChannelMode(const std::string &channel_mode);  // 이거 하나 씩 해야할
+                                                          // 지 고민좀 해야할듯.
 
   Client *invited_clientsFind(int client_fd);
   Client *clientsFind(int client_fd);

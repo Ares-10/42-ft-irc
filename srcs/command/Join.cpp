@@ -80,6 +80,9 @@ void Join::execute() {
       delete command;
     } else {
       // 해당 channel이 이미 존재.
+      if () {  //
+        //
+      }
     }
   }
 }

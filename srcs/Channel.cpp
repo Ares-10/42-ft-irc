@@ -8,8 +8,6 @@ Channel::Channel(Server *server, Client *client,
   _channel_mode = "nst";
   _client_limit = std::numeric_limits<unsigned int>::max();
   _client_number = 1;
-  _op_topic_only = true;
-  _key_only = false;
 
   _clients[client->getFd()] = client;
   _operators[client->getFd()] = client;
@@ -22,8 +20,6 @@ Channel::Channel(Server *server, const std::string &channel_name)
   _channel_mode = "nst";
   _client_limit = std::numeric_limits<unsigned int>::max();
   _client_number = 0;
-  _op_topic_only = true;
-  _key_only = false;
 }
 
 // Getter
@@ -49,10 +45,6 @@ unsigned int Channel::getClientLimit() const { return _client_limit; }
 
 unsigned int Channel::getClientNumber() const { return _client_number; }
 
-bool Channel::isOpTopicOnly() const { return _op_topic_only; }
-
-bool Channel::isKeyOnly() const { return _key_only; }
-
 // Setter
 void Channel::setChannelTopic(const std::string &channel_topic) {
   _channel_topic = channel_topic;
@@ -73,10 +65,6 @@ void Channel::setClientLimit(unsigned int client_limit) {
 // void Channel::setClientNumber(unsigned int client_number) {
 //   _client_limit = client_number;
 // }
-
-void Channel::setOpTopicOnly(bool topic_opt) { _op_topic_only = topic_opt; }
-
-void Channel::setKeyOnly(bool key_opt) { _key_only = key_opt; }
 
 bool Channel::increaseClientNumber() {
   if (_client_number + 1 >= _client_limit) return false;
