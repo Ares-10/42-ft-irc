@@ -78,11 +78,18 @@ void Join::execute() {
       command->setCommand(_client, _server, cmd);
       command->execute();
       delete command;
-    } else {
-      // 해당 channel이 이미 존재.
-      if () {  //
-        //
+    } else {  // 해당 channel이 이미 존재.
+              // 이미 join 되어있는 client인가.. // 미완
+
+      // +k 모드에서 key가 다름.
+      if (channel_ptr->findChannelMode("k") &&
+          _keys[i] != channel_ptr->getChannelKey()) {
+        _client->write(
+            ":" + _server->getServerName() + " " +
+            Error::err_badchannelkey(_client->getNickname(), _channels[i]));
+        continue;
       }
+      //   else if (channel_ptr->findChannelMode("l") &&)
     }
   }
 }

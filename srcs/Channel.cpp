@@ -128,6 +128,16 @@ void Channel::addChannelMode(const std::string &channel_mode) {
   }
 }
 
+bool Channel::findChannelMode(const std::string &channel_mode) {
+  for (size_t i = 0; i < channel_mode.length(); i++) {
+    size_t idx = _channel_mode.find(channel_mode[i]);
+    if (idx != std::string::npos) {
+      return true;
+    }
+  }
+  return false;
+}
+
 Client *Channel::invited_clientsFind(int client_fd) {
   std::map<int, Client *>::iterator it = _invited_clients.find(client_fd);
   return (it != _invited_clients.end()) ? it->second : NULL;
