@@ -23,9 +23,9 @@ class Client {
   // 서버가 가지고 있어야 하나?
 
   std::string _nickname;  // 이거 유일해야함.
-  std::string _username;
-  std::string _realname;
-  std::string _hostname;
+  std::string _username;  // user 이름
+  std::string _realname;  // 실제 이름 ??
+  std::string _hostname;  // client ip 주소
 
   std::string _id;
 
@@ -57,6 +57,7 @@ class Client {
   void quitAllChannel();
 
   Channel *findChannel(const std::string &channel_name);  // 없으면 null 반환.
+  bool addChannel(Channel *channel);
 
   void write(const std::string &message) const;
 };

@@ -101,3 +101,17 @@ Channel *Client::findChannel(
   } else
     return NULL;
 }
+
+bool Client::addChannel(Channel *channel) {
+  std::map<std::string, Channel *>::iterator it =
+      _channels.find(channel->getChannelName());
+  if (it != _channels.end())  // 이미 있음.
+  {
+    std::cout << "addChannel : channel " << channel->getChannelName()
+              << " already exist!\n";
+    return false;
+  } else {
+    _channels[channel->getChannelName()] = channel;
+    return true;
+  }
+}

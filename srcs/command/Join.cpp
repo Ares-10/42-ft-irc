@@ -1,5 +1,3 @@
-#include <Error.hpp>
-
 #include "../../includes/Command.hpp"
 
 void Join::execute() {
@@ -17,18 +15,22 @@ void Join::execute() {
 
   if (_args.size() == 2 && _args[1] == "0") {  // channel 다 나감. (part 이용)
     std::vector<std::string> channel_names = _client->getChannelNames();
+    std::string arguments;
     t_command cmd;
     cmd._invalid_message = false;
     cmd._command = "PART";
     cmd._args.push_back("PART");
     for (std::vector<std::string>::iterator it = channel_names.begin();
          it != channel_names.end(); it++) {
-      cmd._args.push_back(*it);
+      arguments += *it;
     }
-    Command *command = new Part();
-    command->setCommand(_client, _server, cmd);
-    command->execute();
-    delete command;
+    if (arguments.length() > 0) {
+      cmd._args.push_back(arguments);
+      Command *command = new Part();
+      command->setCommand(_client, _server, cmd);
+      command->execute();
+      delete command;
+    }
     return;
   }
   // channel부분 잘라내기.
@@ -43,40 +45,39 @@ void Join::execute() {
       // 해당 channel이 server에 없음. => create channel // 미완
       Channel *new_channel = new Channel(_server, _client, _channels[i]);
       _server->addChannel(new_channel);
-      // if (_keys.size() > i) // 이 부분 libera랑 inspircd(irssi에서 시도 시
-      // 알아서 제거하여 전송)에서는 필요없는 듯 => 없애도 될듯..
+      _client->addChannel(new_channel);
+
+      // key 설정 부분
+      // if (_keys.size() > i) // 이 부분 libera랑 inspircd(irssi에서 시도
+      // 시 알아서 제거하여 전송)에서는 필요없는 듯 => 없애도 될듯..
       // {
       // 	new_channel->setKeyOnly(true);
       // 	new_channel->setChannelKey(_keys[i]);
       // }
 
-      // join 명령어 부분 + topic(없으므로 생략) 해야홤.
+      // join 명령어 부분 (channel의 모두에게)
+      // tcp 113 포트로 ident인증 x => '~' 추가
+      _client->write(":" + _client->getNickname() + "~!" +
+                     _client->getUsername() + "@" + _client->getHostname() +
+                     " JOIN " + _channels[i]);
+
+      // :molybdenum.libera.chat MODE #yuyu +Cnst 이거 모드는 초기 생성 시에만
+      // 나오는 듯?
+      _client->write(":" + _server->getServerName() + " MODE " + _channels[i] +
+                     " +" + new_channel->getChannelMode());
+
+      // topic(없으므로 생략) 해야홤.
 
       // names 부분
-      if (new_channel->clientsFind(
-              _client->getFd()))  // 원래 여기서는 필요없지만 NAMES를 위해.
-      {
-        // 353 :  symbol부분은 '=' 공개 채널, '@' 는 secret channel인데 우린 +s
-        // 옵션을 기본으로 생각했으므로 '@' 로 함.
-        std::string names_str = ":" + _server->getServerName() + " 353" +
-                                _client->getNickname() + " @ " +
-                                new_channel->getChannelName() + " :";
-        // // user 쭉 넣기.
-        std::map<std::string, bool> user_map =
-            new_channel->getClientNamesWithPrefix();
-        for (std::map<std::string, bool>::iterator it = user_map.begin();
-             it != user_map.end(); it++) {
-          if (it->second == true)  // operator
-            names_str += "@";
-          names_str += it->first;
-          if (std::next(it) != user_map.end()) names_str += " ";
-        }
-        _client->write(names_str);
-      }
-      // 366
-      _client->write(":" + _server->getServerName() + " 366 " +
-                     _client->getNickname() + " " +
-                     new_channel->getChannelName() + " :End of /NAMES list");
+      t_command cmd;
+      cmd._invalid_message = false;
+      cmd._command = "NAMES";
+      cmd._args.push_back("NAMES");
+      cmd._args.push_back(_channels[i]);
+      Command *command = new Names();
+      command->setCommand(_client, _server, cmd);
+      command->execute();
+      delete command;
     } else {
       // 해당 channel이 이미 존재.
     }
