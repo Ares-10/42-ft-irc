@@ -12,10 +12,13 @@ class Client;
 
 class Channel {
  private:
-  std::string _channel_name;   // channel name
-  std::string _channel_topic;  // topic (info)
-  std::string _channel_key;    // channel passwd
-  std::string _channel_mode;   // i, t, k, l, o   && 기본적으로 nst
+  std::string _channel_name;  // channel name
+  std::string _channel_topic;  // topic (info) // :은 뺴고 저장한다고 가정.
+  std::string _channel_key;   // channel passwd
+  std::string _channel_mode;  // i, t, k, l, o   && 기본적으로 nst
+
+  std::string _channel_topic_set_time;  // unix timestamp => 찾아봐야할듯.
+  std::string _channel_topic_set_member;
 
   // 첫 번쨰 문자는 채널의 접두사여야함 (# : 일반 채널, & : 지역 채널)
   // 제한 사항은 공백 (' ', 0x20), 제어 문자 G / BELL ('^G',
@@ -40,6 +43,9 @@ class Channel {
   const std::string &getChannelTopic() const;
   const std::string &getChannelKey() const;
   const std::string &getChannelMode() const;
+  const std::string &getChannelTopicSetTime() const;
+  const std::string &getChannelTopicSetMember() const;
+
   const std::map<int, Client *> &getInvitedClients() const;
   const std::map<int, Client *> &getClients() const;
   const std::map<int, Client *> &getOperators() const;
@@ -51,6 +57,10 @@ class Channel {
   void setChannelKey(const std::string &channel_key);
   // 완전 mode setting을 바꿀 경우
   void setChannelMode(const std::string &channel_mode);
+  void setChannelTopicSetTime(const std::string &new_channel_topic_set_time);
+  void setChannelTopicSetMember(
+      const std::string &new_channel_topic_set_member);
+
   void setClientLimit(unsigned int client_limit);
   // void setClientNumber(unsigned int client_number); 이거 대신 inc, dec
   // 만들어야할듯.
@@ -63,16 +73,20 @@ class Channel {
   bool removeOperator(int client_fd);  // client_fd
   bool removeInvitedClient(int client_fd);
 
+  bool addInvitedClient(Client *client);
+  bool addClient(Client *client);
+  bool addOperator(Client *client);
+
+  Client *findInvitedClient(int client_fd);  // 없으면 NULL
+  Client *findClient(int client_fd);
+  Client *findOperator(int client_fd);
+
   // 이거 return값이랑 인자 생각 좀 해봐야 할 듯. 리턴값 필요할 거 같음. 그리고
   // 하나 하나 옵션 체크도 해야할 수 도..
   void removeChannelMode(const std::string &channel_mode);
   void addChannelMode(const std::string &channel_mode);
   bool findChannelMode(const std::string &channel_mode);  // 이거 하나 씩 해야할
                                                           // 지 고민좀 해야할듯.
-
-  Client *invited_clientsFind(int client_fd);
-  Client *clientsFind(int client_fd);
-  Client *operatorsFind(int client_fd);
 
   // client_name : {@(true), not operator(false)}
   std::map<std::string, bool> getClientNamesWithPrefix();

@@ -32,7 +32,7 @@ void Names::execute()  // channel_list부분 미완..
 
     for (std::vector<Channel *>::iterator it = channel_vec.begin();
          it != channel_vec.end(); it++) {
-      if ((*it)->clientsFind(_client->getFd()) &&
+      if ((*it)->findClient(_client->getFd()) &&
           _client->findChannel(
               (*it)->getChannelName()))  // channel의 client 목록에 사용자가
                                          // 있고, 사용자가 join 되어있는

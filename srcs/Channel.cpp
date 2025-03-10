@@ -31,6 +31,13 @@ const std::string &Channel::getChannelKey() const { return _channel_key; }
 
 const std::string &Channel::getChannelMode() const { return _channel_mode; }
 
+const std::string &Channel::getChannelTopicSetTime() const {
+  return _channel_topic_set_time;
+}
+const std::string &Channel::getChannelTopicSetMember() const {
+  return _channel_topic_set_member;
+}
+
 const std::map<int, Client *> &Channel::getInvitedClients() const {
   return _invited_clients;
 }
@@ -56,6 +63,15 @@ void Channel::setChannelKey(const std::string &channel_key) {
 
 void Channel::setChannelMode(const std::string &channel_mode) {
   _channel_mode = channel_mode;
+}
+
+void Channel::setChannelTopicSetTime(
+    const std::string &new_channel_topic_set_time) {
+  _channel_topic_set_time = new_channel_topic_set_time;
+}
+void Channel::setChannelTopicSetMember(
+    const std::string &new_channel_topic_set_member) {
+  _channel_topic_set_member = new_channel_topic_set_member;
 }
 
 void Channel::setClientLimit(unsigned int client_limit) {
@@ -107,6 +123,35 @@ bool Channel::removeInvitedClient(int client_fd) {
   return false;  // 못찾음. (삭제 실패)
 }
 
+// 이거 쓴다음 꼭 _client_number 수 확인하기.
+bool Channel::addClient(Client *client) {
+  std::map<int, Client *>::iterator it = _clients.find(client->getFd());
+  if (it == _clients.end()) {  // 없다면
+    _clients[client->getFd()] = client;
+    increaseClientNumber();
+    return true;
+  }
+  return false;  // 이미 해당하는 사람이 존재함.
+}
+
+bool Channel::addOperator(Client *client) {
+  std::map<int, Client *>::iterator it = _operators.find(client->getFd());
+  if (it == _operators.end()) {  // 없다면
+    _operators[client->getFd()] = client;
+    return true;
+  }
+  return false;  // 이미 해당하는 사람이 존재함.
+}
+
+bool Channel::addInvitedClient(Client *client) {
+  std::map<int, Client *>::iterator it = _invited_clients.find(client->getFd());
+  if (it == _invited_clients.end()) {
+    _invited_clients[client->getFd()] = client;
+    return true;
+  }
+  return false;  // 이미 해당하는 사람이 존재함.
+}
+
 void Channel::removeChannelMode(const std::string &channel_mode) {
   for (size_t i = 0; i < channel_mode.length(); i++) {
     if (channel_mode[i] == 's' || channel_mode[i] == 'n') continue;
@@ -138,17 +183,17 @@ bool Channel::findChannelMode(const std::string &channel_mode) {
   return false;
 }
 
-Client *Channel::invited_clientsFind(int client_fd) {
+Client *Channel::findInvitedClient(int client_fd) {
   std::map<int, Client *>::iterator it = _invited_clients.find(client_fd);
   return (it != _invited_clients.end()) ? it->second : NULL;
 }
 
-Client *Channel::clientsFind(int client_fd) {
+Client *Channel::findClient(int client_fd) {
   std::map<int, Client *>::iterator it = _clients.find(client_fd);
   return (it != _clients.end()) ? it->second : NULL;
 }
 
-Client *Channel::operatorsFind(int client_fd) {
+Client *Channel::findOperator(int client_fd) {
   std::map<int, Client *>::iterator it = _operators.find(client_fd);
   return (it != _operators.end()) ? it->second : NULL;
 }
