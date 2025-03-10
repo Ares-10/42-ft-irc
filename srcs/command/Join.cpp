@@ -22,10 +22,11 @@ void Join::execute() {
     cmd._args.push_back("PART");
     for (std::vector<std::string>::iterator it = channel_names.begin();
          it != channel_names.end(); it++) {
-      arguments += *it;
+      arguments += *it + ",";
     }
     if (arguments.length() > 0) {
-      cmd._args.push_back(arguments);
+      // 마지막 "," 제거
+      cmd._args.push_back(arguments.substr(0, arguments.length() - 1));
       Command *command = new Part();
       command->setCommand(_client, _server, cmd);
       command->execute();
