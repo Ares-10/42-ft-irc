@@ -10,8 +10,8 @@ void Join::execute() {
         ":" + _server->getServerName() + " " +
         Error::err_needmoreparams(_client->getNickname(), _command));
   }
-  if (_args.size() > 3)  // 암 것도 안함.
-    return;
+  // if (_args.size() > 3)  // 암 것도 안함.
+  //   return;
 
   if (_args.size() == 2 && _args[1] == "0") {  // channel 다 나감. (part 이용)
     std::vector<std::string> channel_names = _client->getChannelNames();
@@ -36,7 +36,7 @@ void Join::execute() {
   }
   // channel부분 잘라내기.
   this->makeChannelVec();
-  if (_args.size() == 3)  // key 존재
+  if (_args.size() >= 3)  // key 존재
     this->makeKeyVec();
 
   // join 수행.
@@ -129,15 +129,17 @@ void Join::execute() {
         }
 
         // topic 2줄 있어야함.
-        // 332 RPL_TOPIC
-        _client->write(":" + _server->getServerName() + " 332 " +
-                       _client->getNickname() + " " + _channels[i] + " :" +
-                       channel_ptr->getChannelTopic());
-        // 333 : <setat> is a unix timestamp.
-        _client->write(":" + _server->getServerName() + " 333 " +
-                       _client->getNickname() + " " + _channels[i] + " " +
-                       channel_ptr->getChannelTopicSetMember() + " " +
-                       channel_ptr->getChannelTopicSetTime());
+        if (channel_ptr->getChannelTopic() != "") {
+          // 332 RPL_TOPIC
+          _client->write(":" + _server->getServerName() + " 332 " +
+                         _client->getNickname() + " " + _channels[i] + " :" +
+                         channel_ptr->getChannelTopic());
+          // 333 : <setat> is a unix timestamp.
+          _client->write(":" + _server->getServerName() + " 333 " +
+                         _client->getNickname() + " " + _channels[i] + " " +
+                         channel_ptr->getChannelTopicSetMember() + " " +
+                         channel_ptr->getChannelTopicSetTime());
+        }
         // names 부분
         t_command cmd;
         cmd._invalid_message = false;
@@ -186,6 +188,7 @@ void Join::makeKeyVec() {
   size_t pos = 0;
   std::string key_str;
   for (size_t i = 0; i < _args[2].length(); i++) {
+    // 이거 : 자체를 따로 처리할 줄 알아야할듯...
     if (i = 0 && _args[2][i] == ':')  // 맨 앞에 : 이 왔을때에 대한 예외처리
     {
       i++;

@@ -215,6 +215,8 @@ std::map<std::string, bool> Channel::getClientNamesWithPrefix() {
   return return_map;
 }
 
+// 이거 수정해야할듯. :떄문에, 첫 이름에 #오지 않을때와 " "와 같은 문자가
+// channel name으로 왔을떄 처리를 다르게 해야함.
 bool Channel::checkChannelNameFormat(const std::string &channel_name) {
   if (channel_name.length() < 1 || channel_name[0] != '#') return false;
   for (size_t i = 1; i < channel_name.length(); i++) {

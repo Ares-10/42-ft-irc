@@ -53,7 +53,7 @@ class Client {
   void setClientState(ClientState state);
 
   // 나간 channel의 이름을 return // 둘다 미완
-  std::string quitChannel(const std::string &channel_name);
+  bool quitChannel(const std::string &channel_name);
   void quitAllChannel();
 
   Channel *findChannel(const std::string &channel_name);  // 없으면 null 반환.

@@ -39,6 +39,13 @@ std::string Error::err_badchannelkey(const std::string &nick_name,
   return "475 " + nick_name + " " + channel_name +
          " :Cannot join channel (+k) - bad key";
 }
+// 442 : 클라이언트가 속하지 않은 채널에서 채널에 영향을 미치는 명령을
+// 수행하려고 할 때 반환됨.
+static std::string err_notonchannel(const std::string &nick_name,
+                                    const std::string &channel_name) {
+  return "442 " + nick_name + " " + channel_name +
+         " :You're not on that channel";
+}
 
 std::string Error::err_unauthorizedcommand(const std::string &client_name,
                                            const std::string &command) {

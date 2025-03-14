@@ -6,7 +6,6 @@
 
 class Error {
  public:
-
   // 451 : 유저 등록이 완전히 되지 않은 경우 (getClientState() != REGISTERED)
   static std::string err_notregistered();
 
@@ -40,39 +39,42 @@ class Error {
   static std::string err_badchanmask(const std::string &nick_name,
                                      const std::string &command);
 
+  // 442 : 클라이언트가 속하지 않은 채널에서 채널에 영향을 미치는 명령을
+  // 수행하려고 할 때 반환됨.
+  static std::string err_notonchannel(const std::string &nick_name,
+                                      const std::string &channel_name);
 
+  // 525 : channel key가 올바른 format이 아닐 떄.. <- 이거 왜 발동안댐 ㅋㅋ.
 
-    // 525 : channel key가 올바른 format이 아닐 떄.. <- 이거 왜 발동안댐 ㅋㅋ.
+  // 462
+  std::string err_unauthorizedcommand(const std::string &client_name,
+                                      const std::string &command);
 
+  // 431
+  std::string err_nonicknamegiven(const std::string &client_name,
+                                  const std::string &command);
 
-// 462
-std::string err_unauthorizedcommand(const std::string &client_name,const std::string &command);
+  // 432
+  std::string err_erroneousnickname(const std::string &client_name,
+                                    const std::string &nickname,
+                                    const std::string &command);
 
-// 431
-std::string err_nonicknamegiven(const std::string &client_name, const std::string &command);
+  // 433
+  std::string err_nicknamealreadyuse(const std::string &client_name,
+                                     const std::string &nickname,
+                                     const std::string &command);
 
-// 432
-std::string err_erroneousnickname(const std::string &client_name,
-										const std::string &nickname,
-										const std::string &command);
+  // 451 : 클라이언트가 서버에 등록되지 않음
+  static std::string err_notregistered(const std::string &client_name,
+                                       const std::string &command);
 
-// 433
-std::string err_nicknamealreadyuse(const std::string &client_name,
-										const std::string &nickname,
-										const std::string &command);
+  // 997 : 잘못된 비밀번호
+  static std::string err_incorrectpassword(const std::string &client_name,
+                                           const std::string &command);
 
-
-	// 451 : 클라이언트가 서버에 등록되지 않음
-	static std::string err_notregistered(const std::string &client_name,
-										const std::string &command);
-
-	// 997 : 잘못된 비밀번호
-	static std::string err_incorrectpassword(const std::string &client_name,
-											const std::string &command);
-
-	// 998 : You need to authenticate first
-	static std::string err_needtoauth(const std::string &client_name,
-									const std::string &command);
+  // 998 : You need to authenticate first
+  static std::string err_needtoauth(const std::string &client_name,
+                                    const std::string &command);
 };
 
 #endif
