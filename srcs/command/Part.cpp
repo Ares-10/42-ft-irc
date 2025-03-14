@@ -12,7 +12,8 @@ void Part::execute() {
   }
   //   if (_args.size() > 3)  // 암 것도 안함.
   //     return;
-
+  std::string reason_str = " :";
+  _args.size() == 3 ? reason_str += _args[2] : reason_str = "";
   size_t pos = 0;
   std::string channel_str;
   int format_opt = 0;  // channel format error code
@@ -32,9 +33,10 @@ void Part::execute() {
             for (std::map<int, Client *>::const_iterator it =
                      client_map.begin();
                  it != client_map.end(); it++) {
-              it->second->write(
-                  ":" + _client->getNickname() + "~!" + _client->getUsername() +
-                  "@" + _client->getHostname() + " PART " + channel_str);
+              it->second->write(":" + _client->getNickname() + "~!" +
+                                _client->getUsername() + "@" +
+                                _client->getHostname() + " PART " +
+                                channel_str + reason_str);
             }
             // channel 나가기
             _client->quitChannel(channel_str);
@@ -74,7 +76,8 @@ void Part::execute() {
                it != client_map.end(); it++) {
             it->second->write(":" + _client->getNickname() + "~!" +
                               _client->getUsername() + "@" +
-                              _client->getHostname() + " PART " + channel_str);
+                              _client->getHostname() + " PART " + channel_str +
+                              reason_str);
           }
           // channel 나가기
           _client->quitChannel(channel_str);
