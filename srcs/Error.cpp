@@ -46,12 +46,6 @@ std::string Error::err_unauthorizedcommand(const std::string &client_name,
          " :Unauthorized command (already registered)";
 }
 
-std::string Error::err_channelisfull(const std::string &client_name,
-                                     const std::string &channel_name) {
-  return "471 " + client_name + " " + channel_name +
-         " :Cannot join channel (+l)";
-}
-
 std::string Error::err_notregistered(const std::string &client_name,
                                      const std::string &command) {
   return "451 " + client_name + " " + command + " :You have not registered.";
