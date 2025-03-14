@@ -48,7 +48,7 @@ void Part::execute() {
           }
         } else {  // 채널 양식이 틀렸거나, 채널 존재 x
           if (format_opt == 1)
-            // 479 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
+            // 476 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
             _client->write(":" + _server->getServerName() + " " +
                            Error::err_badchanmask(channel_str));
           else {  // 403
@@ -88,7 +88,7 @@ void Part::execute() {
         }
       } else {  // 채널 양식이 틀렸거나, 채널 존재 x
         if (format_opt == 1)
-          // 479 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
+          // 476 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
           _client->write(":" + _server->getServerName() + " " +
                          Error::err_badchanmask(channel_str));
         else {  // 403

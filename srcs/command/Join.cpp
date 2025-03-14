@@ -171,7 +171,7 @@ void Join::makeChannelVec() {
             _client->write(
                 ":" + _server->getServerName() + " " +
                 Error::err_nosuchchannel(_client->getNickname(), channel_str));
-          else {  // 479 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
+          else {  // 476 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
             _client->write(":" + _server->getServerName() + " " +
                            Error::err_badchanmask(channel_str));
           }
@@ -187,7 +187,7 @@ void Join::makeChannelVec() {
           _client->write(
               ":" + _server->getServerName() + " " +
               Error::err_nosuchchannel(_client->getNickname(), channel_str));
-        else {  // 479 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
+        else {  // 476 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
           _client->write(":" + _server->getServerName() + " " +
                          Error::err_badchanmask(channel_str));
         }
