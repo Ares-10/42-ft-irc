@@ -15,12 +15,15 @@ void Part::execute() {
 
   size_t pos = 0;
   std::string channel_str;
+  int format_opt = 0;  // channel format error code
   for (size_t i = 0; i < _args[1].length(); i++) {
+    format_opt = 0;
     if (_args[1][i] == ',') {
       if (pos < i) {
         channel_str = _args[1].substr(pos, i - pos);
         Channel *channel_ptr = _server->findChannel(channel_str);
-        if (Channel::checkChannelNameFormat(channel_str) && channel_ptr) {
+        if (Channel::checkChannelNameFormat(channel_str, &format_opt) &&
+            channel_ptr) {
           if (channel_ptr->findClient(_client->getFd()) &&
               _client->findChannel(channel_str)) {
             // part 명령어 부분 (channel의 모두에게)
@@ -43,10 +46,16 @@ void Part::execute() {
                 ":" + _server->getServerName() + " " +
                 Error::err_notonchannel(_client->getNickname(), channel_str));
           }
-        } else {  // 403 채널 양식이 틀렸거나, 채널 존재 x
-          _client->write(
-              ":" + _server->getServerName() + " " +
-              Error::err_nosuchchannel(_client->getNickname(), channel_str));
+        } else {  // 채널 양식이 틀렸거나, 채널 존재 x
+          if (format_opt == 1)
+            // 479 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
+            _client->write(":" + _server->getServerName() + " " +
+                           Error::err_badchanmask(channel_str));
+          else {  // 403
+            _client->write(
+                ":" + _server->getServerName() + " " +
+                Error::err_nosuchchannel(_client->getNickname(), channel_str));
+          }
         }
       }
       pos = i + 1;
@@ -55,7 +64,8 @@ void Part::execute() {
     else if (i == _args[1].length() - 1 && pos <= i && _args[1][i] != ',') {
       channel_str = _args[1].substr(pos, i - pos + 1);
       Channel *channel_ptr = _server->findChannel(channel_str);
-      if (Channel::checkChannelNameFormat(channel_str) && channel_ptr) {
+      if (Channel::checkChannelNameFormat(channel_str, &format_opt) &&
+          channel_ptr) {
         if (channel_ptr->findClient(_client->getFd()) &&
             _client->findChannel(channel_str)) {
           // part 명령어 부분 (channel의 모두에게)
@@ -76,10 +86,16 @@ void Part::execute() {
               ":" + _server->getServerName() + " " +
               Error::err_notonchannel(_client->getNickname(), channel_str));
         }
-      } else {  // 403
-        _client->write(
-            ":" + _server->getServerName() + " " +
-            Error::err_nosuchchannel(_client->getNickname(), channel_str));
+      } else {  // 채널 양식이 틀렸거나, 채널 존재 x
+        if (format_opt == 1)
+          // 479 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
+          _client->write(":" + _server->getServerName() + " " +
+                         Error::err_badchanmask(channel_str));
+        else {  // 403
+          _client->write(
+              ":" + _server->getServerName() + " " +
+              Error::err_nosuchchannel(_client->getNickname(), channel_str));
+        }
       }
     }
   }

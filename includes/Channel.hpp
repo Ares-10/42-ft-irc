@@ -12,10 +12,10 @@ class Client;
 
 class Channel {
  private:
-  std::string _channel_name;  // channel name
+  std::string _channel_name;   // channel name
   std::string _channel_topic;  // topic (info) // :은 뺴고 저장한다고 가정.
-  std::string _channel_key;   // channel passwd
-  std::string _channel_mode;  // i, t, k, l, o   && 기본적으로 nst
+  std::string _channel_key;    // channel passwd
+  std::string _channel_mode;   // i, t, k, l, o   && 기본적으로 nst
 
   std::string _channel_topic_set_time;  // unix timestamp => 찾아봐야할듯.
   std::string _channel_topic_set_member;
@@ -91,7 +91,8 @@ class Channel {
   // client_name : {@(true), not operator(false)}
   std::map<std::string, bool> getClientNamesWithPrefix();
 
-  static bool checkChannelNameFormat(const std::string &channel_name);
+  static bool checkChannelNameFormat(const std::string &channel_name,
+                                     int *err_code);
   // static bool checkChannelKeyFormat(const std::string &channel_name); // mode
   // +k 일 때
 };

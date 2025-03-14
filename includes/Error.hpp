@@ -35,9 +35,9 @@ class Error {
   static std::string err_inviteonlychan(const std::string &nick_name,
                                         const std::string &channel_name);
 
-  // 476 : JOIN에서 유효하지 않은 channel 형식일 때 발생.
-  static std::string err_badchanmask(const std::string &nick_name,
-                                     const std::string &command);
+  // 476 : 유효하지 않은 channel 형식일 때 발생.
+  // 이거 libera에서는 479로 나오는 듯.
+  static std::string err_badchanmask(const std::string &channel_name);
 
   // 442 : 클라이언트가 속하지 않은 채널에서 채널에 영향을 미치는 명령을
   // 수행하려고 할 때 반환됨.
