@@ -66,10 +66,8 @@ void Topic::execute() {
     const std::map<int, Client *> client_map = channel_ptr->getClients();
     for (std::map<int, Client *>::const_iterator it = client_map.begin();
          it != client_map.end(); it++) {
-      it->second->write(":" + _client->getNickname() + "~!" +
-                        _client->getUsername() + "@" + _client->getHostname() +
-                        " TOPIC " + _args[1] + " :" +
-                        channel_ptr->getChannelTopic());
+      it->second->write(":" + _client->getClientName() + " TOPIC " + _args[1] +
+                        " :" + channel_ptr->getChannelTopic());
     }
   }
 }

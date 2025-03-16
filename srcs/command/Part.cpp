@@ -34,9 +34,7 @@ void Part::execute() {
             for (std::map<int, Client *>::const_iterator it =
                      client_map.begin();
                  it != client_map.end(); it++) {
-              it->second->write(":" + _client->getNickname() + "~!" +
-                                _client->getUsername() + "@" +
-                                _client->getHostname() + " PART " +
+              it->second->write(":" + _client->getClientName() + " PART " +
                                 channel_str + reason_str);
             }
             // channel 나가기
@@ -76,10 +74,8 @@ void Part::execute() {
           const std::map<int, Client *> client_map = channel_ptr->getClients();
           for (std::map<int, Client *>::const_iterator it = client_map.begin();
                it != client_map.end(); it++) {
-            it->second->write(":" + _client->getNickname() + "~!" +
-                              _client->getUsername() + "@" +
-                              _client->getHostname() + " PART " + channel_str +
-                              reason_str);
+            it->second->write(":" + _client->getClientName() + " PART " +
+                              channel_str + reason_str);
           }
           // channel 나가기
           _client->quitChannel(channel_str);
