@@ -76,6 +76,13 @@ std::string Error::err_nosuchnick(const std::string &inviter_nick_name,
          " :No such nick/channel";
 }
 
+std::string Error::err_usernotinchannel(const std::string &inviter_nick_name,
+                                        const std::string &invitee_nick_name,
+                                        const std::string &channel_name) {
+  return "441 " + inviter_nick_name + " " + invitee_nick_name + " " +
+         channel_name + " :They aren't on that channel";
+}
+
 std::string Error::err_unauthorizedcommand(const std::string &client_name,
                                            const std::string &command) {
   return "462 " + client_name + " " + command +

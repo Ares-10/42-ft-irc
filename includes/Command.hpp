@@ -80,6 +80,11 @@ class Pass : public Command {
 };
 
 class Kick : public Command {
+ private:
+  std::vector<std::string> _kickClientVec;
+
+  void makeClientVec(Channel *channel_ptr);
+
  public:
   void execute();
 };

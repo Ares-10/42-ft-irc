@@ -193,6 +193,14 @@ Client *Channel::findClient(int client_fd) {
   return (it != _clients.end()) ? it->second : NULL;
 }
 
+Client *Channel::findClientByNick(const std::string &nick_name) {
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); it++) {
+    if (it->second->getNickname() == nick_name) return it->second;
+  }
+  return NULL;
+}
+
 Client *Channel::findOperator(int client_fd) {
   std::map<int, Client *>::iterator it = _operators.find(client_fd);
   return (it != _operators.end()) ? it->second : NULL;

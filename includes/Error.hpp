@@ -57,6 +57,12 @@ class Error {
   static std::string err_nosuchnick(const std::string &inviter_nick_name,
                                     const std::string &invitee_nick_name);
 
+  // 441 : 닉이 채널에 가입되지 않은 경우(예: MODE #channel +o nick)
+  // 클라이언트가 채널+닉에 영향을 미치는 명령을 수행하려고 할 때 반환
+  static std::string err_usernotinchannel(const std::string &inviter_nick_name,
+                                          const std::string &invitee_nick_name,
+                                          const std::string &channel_name);
+
   // 525 : channel key가 올바른 format이 아닐 떄.. <- 이거 왜 발동안댐 ㅋㅋ.
 
   // 462

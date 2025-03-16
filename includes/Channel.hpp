@@ -79,6 +79,7 @@ class Channel {
 
   Client *findInvitedClient(int client_fd);  // 없으면 NULL
   Client *findClient(int client_fd);
+  Client *findClientByNick(const std::string &nick_name);
   Client *findOperator(int client_fd);
 
   // 이거 return값이랑 인자 생각 좀 해봐야 할 듯. 리턴값 필요할 거 같음. 그리고
