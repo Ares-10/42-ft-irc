@@ -60,6 +60,15 @@ std::string Error::err_chanoprivsneeded(const std::string &nick_name,
          " :You're not channel operator";
 }
 
+// 443 : 클라이언트가 <nick_name>에 해당하는 사용자를 이미 가입한 채널에
+// 초대를 시도하면 반환됨.
+std::string Error::err_useronchannel(const std::string &inviter_nick_name,
+                                     const std::string &invitee_nick_name,
+                                     const std::string &channel_name) {
+  return "443 " + inviter_nick_name + " " + invitee_nick_name + " " +
+         channel_name + " :is already on channel";
+}
+
 std::string Error::err_unauthorizedcommand(const std::string &client_name,
                                            const std::string &command) {
   return "462 " + client_name + " " + command +

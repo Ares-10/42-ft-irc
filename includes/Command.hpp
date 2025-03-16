@@ -110,4 +110,9 @@ class Topic : public Command {
   void execute();
 };
 
+class Invite : public Command {
+ public:
+  void execute();
+};
+
 #endif  // COMMAND_HPP
