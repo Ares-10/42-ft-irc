@@ -229,6 +229,7 @@ bool Channel::checkChannelNameFormat(const std::string &channel_name,
     *err_code = 2;
     return false;
   }
+  *err_code = 0;
   return true;
 }
 
