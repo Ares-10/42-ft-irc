@@ -53,6 +53,13 @@ std::string Error::err_notonchannel(const std::string &nick_name,
          " :You're not on that channel";
 }
 
+// 482 : 클라이언트에 적절한 채널 권한이 없기 때문에 명령이 실패했음.
+std::string Error::err_chanoprivsneeded(const std::string &nick_name,
+                                        const std::string &channel_name) {
+  return "482 " + nick_name + " " + channel_name +
+         " :You're not channel operator";
+}
+
 std::string Error::err_unauthorizedcommand(const std::string &client_name,
                                            const std::string &command) {
   return "462 " + client_name + " " + command +

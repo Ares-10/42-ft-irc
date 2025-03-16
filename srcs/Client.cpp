@@ -28,6 +28,10 @@ std::string Client::getRealname() const { return _realname; }
 
 std::string Client::getHostname() const { return _hostname; }
 
+std::string Client::getClientName() const {
+  return _nickname + "!~" + _username + "@" + _hostname;
+}
+
 std::string Client::getId() const { return _id; }
 
 int Client::getFd() const { return _fd; }

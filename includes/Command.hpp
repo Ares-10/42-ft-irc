@@ -105,4 +105,9 @@ class Names : public Command {
   void execute();
 };
 
+class Topic : public Command {
+ public:
+  void execute();
+};
+
 #endif  // COMMAND_HPP

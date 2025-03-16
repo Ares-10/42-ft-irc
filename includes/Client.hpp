@@ -41,6 +41,7 @@ class Client {
   std::string getUsername() const;
   std::string getRealname() const;
   std::string getHostname() const;
+  std::string getClientName() const;
   std::string getId() const;
   ClientState getClientState() const;
   std::vector<std::string> getChannelNames() const;

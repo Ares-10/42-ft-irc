@@ -12,6 +12,7 @@ void Part::execute() {
   }
   //   if (_args.size() > 3)  // 암 것도 안함.
   //     return;
+
   std::string reason_str = " :";
   _args.size() == 3 ? reason_str += _args[2] : reason_str = "";
   size_t pos = 0;
@@ -50,7 +51,8 @@ void Part::execute() {
           }
         } else {  // 채널 양식이 틀렸거나, 채널 존재 x
           if (format_opt == 1)
-            // 476 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
+            // 476 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음. //
+            // 이거 part도 해당하는지 확인해야 할듯. join만 체크했음.
             _client->write(":" + _server->getServerName() + " " +
                            Error::err_badchanmask(channel_str));
           else {  // 403

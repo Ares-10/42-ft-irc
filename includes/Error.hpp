@@ -44,6 +44,10 @@ class Error {
   static std::string err_notonchannel(const std::string &nick_name,
                                       const std::string &channel_name);
 
+  // 482 : 클라이언트에 적절한 채널 권한이 없기 때문에 명령이 실패했음.
+  static std::string err_chanoprivsneeded(const std::string &nick_name,
+                                          const std::string &channel_name);
+
   // 525 : channel key가 올바른 format이 아닐 떄.. <- 이거 왜 발동안댐 ㅋㅋ.
 
   // 462
