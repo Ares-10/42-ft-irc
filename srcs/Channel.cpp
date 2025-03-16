@@ -220,7 +220,8 @@ std::map<std::string, bool> Channel::getClientNamesWithPrefix() {
 bool Channel::checkChannelNameFormat(const std::string &channel_name,
                                      int *err_code) {
   for (size_t i = 1; i < channel_name.length(); i++) {  // 479(476)
-    if (channel_name[i] == ' ' || !std::isprint(channel_name[i])) {
+    if (channel_name[i] == ' ' || channel_name[i] == ',' ||
+        !std::isprint(channel_name[i])) {
       *err_code = 1;
       return false;
     }

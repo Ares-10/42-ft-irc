@@ -202,3 +202,11 @@ Channel *Server::findChannel(const std::string &channel_name) {
   } else
     return NULL;
 }
+
+Client *Server::findClientByNick(const std::string &nick_name) {
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); it++) {
+    if (it->second->getNickname() == nick_name) return it->second;
+  }
+  return NULL;
+}

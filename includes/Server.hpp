@@ -61,6 +61,7 @@ class Server {
   bool removeChannel(
       std::string channel_name);  // &는 혹시 문제가 될 수 있으므로.. (del 후에)
   Channel *findChannel(const std::string &channel_name);  // 없으면 null 반환.
+  Client *findClientByNick(const std::string &nick_name);
 
   void sendMessage(const Client *client, const std::string &message) const;
   void sendMessage(const Client *client, const std::string &num,

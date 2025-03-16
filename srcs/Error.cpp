@@ -69,6 +69,13 @@ std::string Error::err_useronchannel(const std::string &inviter_nick_name,
          channel_name + " :is already on channel";
 }
 
+// 401 : 제공된 별명에 대한 클라이언트를 찾을 수 없음을 나타냄.
+std::string Error::err_nosuchnick(const std::string &inviter_nick_name,
+                                  const std::string &invitee_nick_name) {
+  return "401 " + inviter_nick_name + " " + invitee_nick_name +
+         " :No such nick/channel";
+}
+
 std::string Error::err_unauthorizedcommand(const std::string &client_name,
                                            const std::string &command) {
   return "462 " + client_name + " " + command +
