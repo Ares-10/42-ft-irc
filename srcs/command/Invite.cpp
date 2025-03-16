@@ -53,4 +53,11 @@ void Invite::execute() {
         Error::err_chanoprivsneeded(_client->getNickname(), _args[2]));
   }
   // invite message보내고, invited_clients에 추가하기.
+
+  channel_ptr->addInvitedClient(invitee_ptr);
+  // 341 -> inviter가 회신 받는 내용
+  _client->write(":" + _server->getServerName() + " 341 " +
+                 _client->getNickname() + " " + _args[1] + " " + _args[2]);
+  invitee_ptr->write(_client->getClientName() + " INVITE " +
+                     invitee_ptr->getNickname() + " :" + _args[2]);
 }
