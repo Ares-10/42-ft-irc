@@ -76,11 +76,20 @@ std::string Error::err_nosuchnick(const std::string &inviter_nick_name,
          " :No such nick/channel";
 }
 
+// 441 : 닉이 채널에 가입되지 않은 경우(예: MODE #channel +o nick)
+// 클라이언트가 채널+닉에 영향을 미치는 명령을 수행하려고 할 때 반환
 std::string Error::err_usernotinchannel(const std::string &inviter_nick_name,
                                         const std::string &invitee_nick_name,
                                         const std::string &channel_name) {
   return "441 " + inviter_nick_name + " " + invitee_nick_name + " " +
          channel_name + " :They aren't on that channel";
+}
+
+// 472 : 클라이언트가 사용하는 모드 문자가 서버에서 인식되지 않음을 나타냅니다
+// libera 는 is an unknown ~ 라고 함. 공식은 is unknown
+std::string Error::err_unknownmode(const std::string &nick_name,
+                                   char mode_char) {
+  return "472 " + nick_name + " " + mode_char + " :is unknown mode char to me";
 }
 
 std::string Error::err_unauthorizedcommand(const std::string &client_name,

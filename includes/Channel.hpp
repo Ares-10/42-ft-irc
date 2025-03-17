@@ -96,6 +96,8 @@ class Channel {
 
   static bool checkChannelNameFormat(const std::string &channel_name,
                                      int *err_code);
+  static bool checkChannelModeFormat(char c);
+
   // static bool checkChannelKeyFormat(const std::string &channel_name); // mode
   // +k 일 때
 };

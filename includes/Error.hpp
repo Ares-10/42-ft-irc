@@ -63,6 +63,10 @@ class Error {
                                           const std::string &invitee_nick_name,
                                           const std::string &channel_name);
 
+  // 472 : 클라이언트가 사용하는 모드 문자가 서버에서 인식되지 않음을 나타냅니다
+  static std::string err_unknownmode(const std::string &nick_name,
+                                     char mode_char);
+
   // 525 : channel key가 올바른 format이 아닐 떄.. <- 이거 왜 발동안댐 ㅋㅋ.
 
   // 462
