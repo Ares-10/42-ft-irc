@@ -113,7 +113,7 @@ std::vector<std::string> Server::getClientNicknames() const {
 
 std::string Server::getCurTime() const {
   std::stringstream ss;
-  ss << time(0);
+  ss << time(NULL);
   return ss.str();
 }
 

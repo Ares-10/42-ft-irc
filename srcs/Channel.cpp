@@ -2,7 +2,9 @@
 
 Channel::Channel(Server *server, Client *client,
                  const std::string &channel_name)
-    : _server(server), _channel_name(channel_name) {
+    : _server(server),
+      _channel_name(channel_name),
+      _channel_generate_time(server->getCurTime()) {
   _channel_topic = "";
   _channel_key = "";
   _channel_mode = "nst";
@@ -14,7 +16,9 @@ Channel::Channel(Server *server, Client *client,
 }
 
 Channel::Channel(Server *server, const std::string &channel_name)
-    : _server(server), _channel_name(channel_name) {
+    : _server(server),
+      _channel_name(channel_name),
+      _channel_generate_time(server->getCurTime()) {
   _channel_topic = "";
   _channel_key = "";
   _channel_mode = "nst";
@@ -152,25 +156,29 @@ bool Channel::addInvitedClient(Client *client) {
   return false;  // 이미 해당하는 사람이 존재함.
 }
 
-void Channel::removeChannelMode(const std::string &channel_mode) {
+bool Channel::removeChannelMode(const std::string &channel_mode) {
   for (size_t i = 0; i < channel_mode.length(); i++) {
     if (channel_mode[i] == 's' || channel_mode[i] == 'n') continue;
     size_t idx = _channel_mode.find(channel_mode[i]);
     if (idx != std::string::npos) {
       // 있다면 지워라
       _channel_mode.erase(idx);
+      return true;
     }
   }
+  return false;
 }
 
-void Channel::addChannelMode(const std::string &channel_mode) {
+bool Channel::addChannelMode(const std::string &channel_mode) {
   for (size_t i = 0; i < channel_mode.length(); i++) {
     size_t idx = _channel_mode.find(channel_mode[i]);
     if (idx == std::string::npos) {
       // 없다면 만들어라.
       _channel_mode += channel_mode[i];
+      return true;
     }
   }
+  return false;
 }
 
 bool Channel::findChannelMode(const std::string &channel_mode) {

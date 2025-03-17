@@ -12,12 +12,13 @@ class Client;
 
 class Channel {
  private:
-  std::string _channel_name;   // channel name
+  std::string _channel_name;  // channel name
   std::string _channel_topic;  // topic (info) // :은 뺴고 저장한다고 가정.
-  std::string _channel_key;    // channel passwd
-  std::string _channel_mode;   // i, t, k, l, o   && 기본적으로 nst
+  std::string _channel_key;   // channel passwd
+  std::string _channel_mode;  // i, t, k, l, o   && 기본적으로 nst
 
-  std::string _channel_topic_set_time;  // unix timestamp => 찾아봐야할듯.
+  const std::string _channel_generate_time;  // unix timestamp (1742193917)
+  std::string _channel_topic_set_time;       // unix timestamp
   std::string _channel_topic_set_member;
 
   // 첫 번쨰 문자는 채널의 접두사여야함 (# : 일반 채널, & : 지역 채널)
@@ -44,6 +45,7 @@ class Channel {
   const std::string &getChannelKey() const;
   const std::string &getChannelMode() const;
   const std::string &getChannelTopicSetTime() const;
+  const std::string &getChannelGenerateTime() const;
   const std::string &getChannelTopicSetMember() const;
 
   const std::map<int, Client *> &getInvitedClients() const;
@@ -84,8 +86,8 @@ class Channel {
 
   // 이거 return값이랑 인자 생각 좀 해봐야 할 듯. 리턴값 필요할 거 같음. 그리고
   // 하나 하나 옵션 체크도 해야할 수 도..
-  void removeChannelMode(const std::string &channel_mode);
-  void addChannelMode(const std::string &channel_mode);
+  bool removeChannelMode(const std::string &channel_mode);
+  bool addChannelMode(const std::string &channel_mode);
   bool findChannelMode(const std::string &channel_mode);  // 이거 하나 씩 해야할
                                                           // 지 고민좀 해야할듯.
 
