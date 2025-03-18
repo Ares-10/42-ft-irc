@@ -13,6 +13,14 @@ std::string Error::err_needmoreparams(const std::string &nick_name,
   return "461 " + nick_name + " " + command + " :Not enough parameters";
 }
 
+// 401
+std::string Error::err_nosuchnick(const std::string &sender_nickname,
+								const std::string &target_nickname)
+{
+	return "401 " + sender_nickname + " " + target_nickname + " :No such nick/channel";
+}
+
+
 // 403
 std::string Error::err_nosuchchannel(const std::string &nick_name,
                                      const std::string &channel_name) {

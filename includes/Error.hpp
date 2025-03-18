@@ -18,6 +18,10 @@ public:
 	static std::string err_channelisfull(const std::string &nick_name,
 										const std::string &channel_name);
 
+	// 401 : No such nick/channel
+	static std::string err_nosuchnick(const std::string &sender_nickname,
+									const std::string &target_nickname);
+
 	// 403 : 제공된 채널 이름에 대한 채널을 찾을 수 없음을 나타냄.
 	static std::string err_nosuchchannel(const std::string &nick_name,
 										const std::string &channel_name);

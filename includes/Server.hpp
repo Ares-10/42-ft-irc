@@ -54,7 +54,7 @@ public:
 	void addClientNickname(const std::string &nickname);
 	void removeClientNickname(const std::string &nickname);
 	void removeClient(Client *client);
-
+	Client *findClient(const std::string &nickname);
 	
 	bool addChannel(Channel *channel);
 	bool removeChannel(std::string channel_name); // &는 혹시 문제가 될 수 있으므로.. (del 후에)
