@@ -85,7 +85,7 @@ void Join::execute() {
           _client->findChannel(_channels[i]))
         continue;
       // +k 모드에서 key의 배열 인덱스 초과(키가 없음) or 키가 다름
-      else if (channel_ptr->findChannelMode("k") &&
+      else if (channel_ptr->findChannelMode('k') &&
                (_keys.size() <= i ||
                 _keys[i] != channel_ptr->getChannelKey())) {
         _client->write(
@@ -95,7 +95,7 @@ void Join::execute() {
       }
       // 초대되지 않았고, +l 옵션인 방의 최대 제한 수에 다다랐는가?
       else if (channel_ptr->findInvitedClient(_client->getFd()) == NULL &&
-               channel_ptr->findChannelMode("l") &&
+               channel_ptr->findChannelMode('l') &&
                channel_ptr->getClientLimit() <=
                    channel_ptr->getClientNumber()) {
         _client->write(
@@ -104,7 +104,7 @@ void Join::execute() {
         continue;
       }
       //  +i 옵션인데 초대되지 않음.
-      else if (channel_ptr->findChannelMode("i") &&
+      else if (channel_ptr->findChannelMode('i') &&
                channel_ptr->findInvitedClient(_client->getFd()) == NULL) {
         _client->write(
             ":" + _server->getServerName() + " " +

@@ -156,37 +156,34 @@ bool Channel::addInvitedClient(Client *client) {
   return false;  // 이미 해당하는 사람이 존재함.
 }
 
-bool Channel::removeChannelMode(const std::string &channel_mode) {
-  for (size_t i = 0; i < channel_mode.length(); i++) {
-    if (channel_mode[i] == 's' || channel_mode[i] == 'n') continue;
-    size_t idx = _channel_mode.find(channel_mode[i]);
-    if (idx != std::string::npos) {
-      // 있다면 지워라
-      _channel_mode.erase(idx);
-      return true;
-    }
+bool Channel::removeChannelMode(char channel_mode) {
+  if (channel_mode == 's' || channel_mode == 'n') return false;
+  size_t idx = _channel_mode.find(channel_mode);
+  if (idx != std::string::npos) {
+    // 있다면 지워라
+    _channel_mode.erase(idx);
+    return true;
   }
   return false;
 }
 
-bool Channel::addChannelMode(const std::string &channel_mode) {
-  for (size_t i = 0; i < channel_mode.length(); i++) {
-    size_t idx = _channel_mode.find(channel_mode[i]);
-    if (idx == std::string::npos) {
-      // 없다면 만들어라.
-      _channel_mode += channel_mode[i];
-      return true;
-    }
+bool Channel::addChannelMode(char channel_mode) {
+  if (!checkChannelModeFormat(channel_mode))
+    return false;  // i, k, o, l, t만 가능
+  size_t idx = _channel_mode.find(channel_mode);
+  if (idx == std::string::npos) {
+    // 없다면 만들어라.
+    _channel_mode += channel_mode;
+    return true;
   }
   return false;
 }
 
-bool Channel::findChannelMode(const std::string &channel_mode) {
-  for (size_t i = 0; i < channel_mode.length(); i++) {
-    size_t idx = _channel_mode.find(channel_mode[i]);
-    if (idx != std::string::npos) {
-      return true;
-    }
+bool Channel::findChannelMode(char channel_mode) {
+  size_t idx = _channel_mode.find(channel_mode);
+  if (idx != std::string::npos) {
+    // 있다면 true
+    return true;
   }
   return false;
 }

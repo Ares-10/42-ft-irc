@@ -81,14 +81,14 @@ void Kick::makeClientVec(Channel *channel_ptr) {
             // 해당 channel에도 찾고자 하는 client 존재
             _kickClientVec.push_back(client_str);
           } else {
-            // 441 channel에 초대하고자 하는 client가 없음.
+            // 441 channel에 찾고고자 하는 client가 없음.
             _client->write(
                 ":" + _server->getServerName() + " " +
                 Error::err_usernotinchannel(_client->getNickname(), client_str,
                                             channel_ptr->getChannelName()));
           }
         } else {
-          // 401 server에 초대하고자 하는 client가 없음.
+          // 401 server에 찾고자 하는 client가 없음.
           _client->write(
               ":" + _server->getServerName() + " " +
               Error::err_nosuchnick(_client->getNickname(), client_str));
@@ -103,14 +103,14 @@ void Kick::makeClientVec(Channel *channel_ptr) {
           // 해당 channel에도 찾고자 하는 client 존재
           _kickClientVec.push_back(client_str);
         } else {
-          // 441 channel에 초대하고자 하는 client가 없음.
+          // 441 channel에 찾고자 하는 client가 없음.
           _client->write(
               ":" + _server->getServerName() + " " +
               Error::err_usernotinchannel(_client->getNickname(), client_str,
                                           channel_ptr->getChannelName()));
         }
       } else {
-        // 401 server에 초대하고자 하는 client가 없음.
+        // 401 server에 찾고자 하는 client가 없음.
         _client->write(
             ":" + _server->getServerName() + " " +
             Error::err_nosuchnick(_client->getNickname(), client_str));

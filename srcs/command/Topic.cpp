@@ -49,7 +49,7 @@ void Topic::execute() {
                      " :No topic is set");
     }
   } else {  // args.size() > 2
-    if (channel_ptr->findChannelMode("t") &&
+    if (channel_ptr->findChannelMode('t') &&
         channel_ptr->findOperator(_client->getFd()) == NULL) {
       // +t 모드에서 operator가 아니라면
       // 482

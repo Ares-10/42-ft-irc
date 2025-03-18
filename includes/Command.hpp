@@ -100,6 +100,10 @@ class Pong : public Command {
 };
 
 class Mode : public Command {
+ private:
+  void makeReturnStr(char &prev_sign, char curr_sign, char mode_c,
+                     std::string &return_mode_str);
+
  public:
   void execute();
 };
