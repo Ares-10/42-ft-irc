@@ -92,6 +92,24 @@ std::string Error::err_unknownmode(const std::string &nick_name,
   return "472 " + nick_name + " " + mode_char + " :is unknown mode char to me";
 }
 
+// 여기부터 아직 테스트 안해봄.
+// 404 : PRIVMSG/ NOTICE를 channel에 전달할 수 없음 을 나타냄.
+std::string Error::err_cannotsendtochan(const std::string &nick_name,
+                                        const std::string &channel_name) {
+  return "404 " + nick_name + " " + channel_name + " :Cannot send to channel";
+}
+
+// 411 : PRIVMSG수신자가 지정되지 않아 메시지가 전달되지 않았음을 나타냄.
+std::string Error::err_norecipient(const std::string &nick_name,
+                                   const std::string &command) {
+  return "411 " + nick_name + " :No recipient given " + command;
+}
+
+// 412 : PRIVMSG보낼 텍스트가 없어서 메시지가 전달되지 않았음을 나타냄,
+std::string Error::err_notexttosend(const std::string &nick_name) {
+  return "412 " + nick_name + " :No test to send";
+}
+
 std::string Error::err_unauthorizedcommand(const std::string &client_name,
                                            const std::string &command) {
   return "462 " + client_name + " " + command +
