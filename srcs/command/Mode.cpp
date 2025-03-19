@@ -93,7 +93,7 @@ void Mode::execute() {
   }
 
   std::string return_mode_str;
-  std::string return_arg_str;
+  std::vector<std::string> return_arg_vec;
   arg_idx = 3;
   prev_sign = mode_str[0];
   curr_sign = '+';  // 혹시 모르니까.
@@ -136,11 +136,76 @@ void Mode::execute() {
         channel_ptr->addOperator(invitee_ptr);
       else
         channel_ptr->removeOperator(invitee_ptr->getFd());
-
       makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
-      return_arg_str += _args[arg_idx++];
+      return_arg_vec.push_back(_args[arg_idx++]);
+
+    } else if (mode_str[i] == 'k') {
+      // mode k 수행
+      if (curr_sign == '+') {
+        // + 면 key 설정.
+        std::string key_str;
+        for (size_t i = 0; i < _args[arg_idx].length(); i++) {
+          if (_args[arg_idx][i] != ':' && _args[arg_idx][i] != ',')
+            key_str += _args[arg_idx][i];
+        }
+        if (key_str.length() > 0) {
+          channel_ptr->addChannelMode('k');
+          channel_ptr->setChannelKey(key_str);
+          makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
+          return_arg_vec.push_back(key_str);
+        }
+      } else if (channel_ptr->findChannelMode('k')) {
+        // - 면 channel mode 확인하고 +k일때만 변경.
+        channel_ptr->setChannelKey("");
+        channel_ptr->removeChannelMode('k');
+        makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
+        return_arg_vec.push_back("*");
+      }
+      arg_idx++;
+    } else if (mode_str[i] == 'l') {
+      // mode l 수행
+      if (curr_sign == '+') {
+        int limit_number = 0;
+        std::stringstream ss;
+        std::string check;
+
+        limit_number = atoi(_args[arg_idx].c_str());
+        ss << limit_number;
+        ss >> check;
+        if (limit_number > 0 &&
+            (_args[arg_idx] == check ||
+             (_args[arg_idx][0] == '+' && _args[arg_idx].substr(1) == check))) {
+          // 오버플로우나 이상 없는 양수
+          channel_ptr->addChannelMode('l');
+          channel_ptr->setClientLimit(limit_number);
+          makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
+          return_arg_vec.push_back(check);
+        }
+        arg_idx++;
+      } else if (channel_ptr->findChannelMode('l')) {
+        // - 옵션이고, channel mode에 l옵션이 있다면,
+        channel_ptr->removeChannelMode('l');
+        channel_ptr->setClientLimit(std::numeric_limits<unsigned int>::max());
+        makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
+      }
+
     } else {  // 이미 있거나 굳이 반복 필요 x
       continue;
+    }
+  }
+  // 결과를 각 client에게 출력
+  // :nick_name!~user_name@121.135.181.42 MODE #yuyu -o+o nock nock
+  if (return_mode_str.length() > 0) {
+    std::string write_str = ":" + _client->getClientName() + " MODE " +
+                            _args[1] + " " + return_mode_str;
+    for (std::vector<std::string>::iterator iter = return_arg_vec.begin();
+         iter != return_arg_vec.end(); iter++) {
+      write_str += " " + *iter;
+    }
+    const std::map<int, Client *> client_map = channel_ptr->getClients();
+    for (std::map<int, Client *>::const_iterator it = client_map.begin();
+         it != client_map.end(); it++) {
+      it->second->write(write_str);
     }
   }
 }
