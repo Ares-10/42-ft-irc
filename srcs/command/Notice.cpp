@@ -11,13 +11,6 @@ void Notice::execute()
 	std::string target = _args[0];
 	std::string message = _args[1];
 
-	for (std::vector<std::string>::iterator it = _args.begin() + 2; it != _args.end(); it++)
-		message += " " + *it;
-
-	if (message.at(0) == ':')
-		message = message.substr(1);
-
-
 	// to channel
 	if (target.at(0) == '#')
 	{
