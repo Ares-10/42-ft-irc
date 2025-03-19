@@ -5,7 +5,9 @@
  */
 void Notice::execute()
 {
-	if (_args.size() < 2 || _args[0].empty() || _args[1].empty())
+	if (_client->getClientState() != REGISTERED)
+		throw std::runtime_error(Error::err_notregistered(_client->getNickname(), "NOTICE"));
+	if (_args.size() < 2)
 		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "NOTICE"));
 
 	std::string target = _args[0];
