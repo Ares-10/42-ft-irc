@@ -3,12 +3,12 @@
 
 #include <sys/socket.h>
 
-#include <Server.hpp>
 #include <map>
 #include <string>
 #include <vector>
 
 #include "Channel.hpp"
+#include "Server.hpp"
 
 class Channel;
 

@@ -95,7 +95,7 @@ void Kick::makeClientVec(Channel *channel_ptr) {
         }
       }
       pos = i + 1;
-    } else if (i == _args[2].length() - 1 && pos <= i && _args[2][i] != ',') {
+    } else if (i == _args[2].length() - 1 && pos <= i) {
       client_str = _args[2].substr(pos, i - pos + 1);
       if (_server->findClientByNick(client_str)) {
         // server에 찾고자 하는 client 존재

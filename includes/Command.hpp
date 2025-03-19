@@ -37,6 +37,11 @@ class Notice : public Command {
 };
 
 class PrivMsg : public Command {
+ private:
+  // int 0 = client, 1 = channel, 2 = channel (only operator)
+  std::vector<std::pair<int, std::string> > _nick_channel_vec;
+  void makeClientChannelVec();
+
  public:
   void execute();
 };

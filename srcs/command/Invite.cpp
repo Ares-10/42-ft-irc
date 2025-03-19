@@ -1,4 +1,4 @@
-#include "../includes/Command.hpp"
+#include "../../includes/Command.hpp"
 
 void Invite::execute() {
   if (_client->getClientState() != REGISTERED) {  // 451

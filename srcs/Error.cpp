@@ -1,4 +1,4 @@
-#include "Error.hpp"
+#include "../includes/Error.hpp"
 
 // 451
 std::string Error::err_notregistered() {
@@ -93,7 +93,7 @@ std::string Error::err_unknownmode(const std::string &nick_name,
 }
 
 // 여기부터 아직 테스트 안해봄.
-// 404 : PRIVMSG/ NOTICE를 channel에 전달할 수 없음 을 나타냄.
+// 404 : PRIVMSG/ NOTICE를 channel에 전달할 수 없음을 나타냄.
 std::string Error::err_cannotsendtochan(const std::string &nick_name,
                                         const std::string &channel_name) {
   return "404 " + nick_name + " " + channel_name + " :Cannot send to channel";
@@ -102,7 +102,7 @@ std::string Error::err_cannotsendtochan(const std::string &nick_name,
 // 411 : PRIVMSG수신자가 지정되지 않아 메시지가 전달되지 않았음을 나타냄.
 std::string Error::err_norecipient(const std::string &nick_name,
                                    const std::string &command) {
-  return "411 " + nick_name + " :No recipient given " + command;
+  return "411 " + nick_name + " :No recipient given (" + command + ")";
 }
 
 // 412 : PRIVMSG보낼 텍스트가 없어서 메시지가 전달되지 않았음을 나타냄,
