@@ -22,13 +22,36 @@ void PrivMsg::execute() {
   makeClientChannelVec();
 
   // 해당 쌍 계산하기.
-
-  //     Client *client_ptr = _server->findClientByNick(_args[1]);
-  // if (client_ptr) {
-  //   // client 존재 => privmsg 보내기
-  // } else {
-  //   //
-  // }
+  for (std::vector<std::pair<int, std::string> >::iterator it =
+           _nick_channel_vec.begin();
+       it != _nick_channel_vec.end(); it++) {
+    if (it->first == 0) {  // 0 client
+      _server->findClientByNick(it->second)
+          ->write(":" + _client->getClientName() + " PRIVMSG " + it->second +
+                  " :" + _args[2]);
+    } else if (it->first == 1) {  // 1 channel
+      std::map<int, Client *> client_map =
+          _server->findChannel(it->second)->getClients();
+      for (std::map<int, Client *>::const_iterator const_it =
+               client_map.begin();
+           const_it != client_map.end(); const_it++) {
+        if (_client->getFd() == const_it->second->getFd())  // 같은 사람
+          continue;
+        const_it->second->write(":" + _client->getClientName() + " PRIVMSG " +
+                                it->second + " :" + _args[2]);
+      }
+    } else {  // 2 channel operator
+      std::map<int, Client *> operator_map =
+          _server->findChannel(it->second)->getOperators();
+      for (std::map<int, Client *>::const_iterator const_it =
+               operator_map.begin();
+           const_it != operator_map.end(); const_it++) {
+        if (_client->getFd() != const_it->second->getFd()) continue;
+        const_it->second->write(":" + _client->getClientName() + " PRIVMSG @" +
+                                it->second + " :" + _args[2]);
+      }
+    }
+  }
 }
 
 void PrivMsg::makeClientChannelVec() {
