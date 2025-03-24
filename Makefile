@@ -19,6 +19,7 @@ SRCS =  srcs/main.cpp				\
 		srcs/command/Quit.cpp		\
 		srcs/command/User.cpp		\
 		srcs/command/Pass.cpp		\
+		srcs/command/Names.cpp		\
 
 OBJS = $(SRCS:.cpp=.o)
 

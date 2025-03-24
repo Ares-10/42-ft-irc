@@ -186,7 +186,7 @@ void Join::makeKeyVec() {
   size_t pos = 0;
   std::string key_str;
   for (size_t i = 0; i < _args[2].length(); i++) {
-    if (i = 0 && _args[2][i] == ':')  // 맨 앞에 : 이 왔을때에 대한 예외처리
+    if (i == 0 && _args[2][i] == ':')  // 맨 앞에 : 이 왔을때에 대한 예외처리
     {
       i++;
       if (1 < _args[2].length() && _args[2][i] == ',') {

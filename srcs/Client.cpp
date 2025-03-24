@@ -30,8 +30,6 @@ std::string Client::getHostname() const { return _hostname; }
 
 std::string Client::getId() const { return _id; }
 
-int Client::getFd() const { return _fd; }
-
 ClientState Client::getClientState() const { return _state; }
 
 std::vector<std::string> Client::getChannelNames() const {

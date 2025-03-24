@@ -13,6 +13,14 @@ std::string Error::err_needmoreparams(const std::string &nick_name,
   return "461 " + nick_name + " " + command + " :Not enough parameters";
 }
 
+// 401
+std::string Error::err_nosuchnick(const std::string &sender_nickname,
+								const std::string &target_nickname)
+{
+	return "401 " + sender_nickname + " " + target_nickname + " :No such nick/channel";
+}
+
+
 // 403
 std::string Error::err_nosuchchannel(const std::string &nick_name,
                                      const std::string &channel_name) {
@@ -44,12 +52,6 @@ std::string Error::err_unauthorizedcommand(const std::string &client_name,
                                            const std::string &command) {
   return "462 " + client_name + " " + command +
          " :Unauthorized command (already registered)";
-}
-
-std::string Error::err_channelisfull(const std::string &client_name,
-                                     const std::string &channel_name) {
-  return "471 " + client_name + " " + channel_name +
-         " :Cannot join channel (+l)";
 }
 
 std::string Error::err_notregistered(const std::string &client_name,
