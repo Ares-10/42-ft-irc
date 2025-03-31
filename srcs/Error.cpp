@@ -124,7 +124,7 @@ std::string Error::err_notregistered(const std::string &client_name,
 
 std::string Error::err_incorrectpassword(const std::string &client_name,
                                          const std::string &command) {
-  return "997 " + client_name + " " + command + " :Incorrect password.";
+  return "464 " + client_name + " " + command + " :Incorrect password.";
 }
 
 std::string Error::err_needtoauth(const std::string &client_name,

@@ -106,7 +106,7 @@ class Error {
   static std::string err_notregistered(const std::string &client_name,
                                        const std::string &command);
 
-  // 997 : 잘못된 비밀번호
+  // 464 : 잘못된 비밀번호
   static std::string err_incorrectpassword(const std::string &client_name,
                                            const std::string &command);
 
