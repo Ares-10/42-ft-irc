@@ -2,29 +2,36 @@
 
 void Nick::execute()
 {
-	if (_client->getClientState() != LOGIN)
+	// 클라이언트 상태가 HANDSHAKE(비밀번호 인증 전)라면 인증이 필요하다는 오류
+	if (_client->getClientState() == HANDSHAKE)
 		throw std::runtime_error(Error::err_needtoauth(_client->getNickname(), "NICK"));
+
 	if (_args.empty())
 		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "NICK"));
 
-	int j = 0;
-	while (_args[0][j])
+	// 닉네임 유효성 검사
+	const std::string& newNick = _args[0];
+	for (size_t j = 0; j < newNick.length(); ++j)
 	{
-		if (!isalnum(_args[0][j]) && _args[0][j] != '-' && _args[0][j] != '_' && _args[0][j] != '\r')
-			throw std::runtime_error(Error::err_erroneousnickname(_client->getNickname(), _args[0], "NICK"));
-		j++;
+		if (!isalnum(newNick[j]) && newNick[j] != '-' && newNick[j] != '_')
+			throw std::runtime_error(Error::err_erroneousnickname(_client->getNickname(), newNick, "NICK"));
 	}
 
+	// 닉네임 중복 확인
 	std::vector<std::string> clientNicknames = _server->getClientNicknames();
-	if (std::find(clientNicknames.begin(), clientNicknames.end(), _args[0])
-		!= clientNicknames.end())
-		throw std::runtime_error(Error::err_nicknamealreadyuse(_client->getNickname(), _args[0], "NICK"));
+	if (std::find(clientNicknames.begin(), clientNicknames.end(), newNick) != clientNicknames.end())
+		throw std::runtime_error(Error::err_nicknamealreadyuse(_client->getNickname(), newNick, "NICK"));
 
+	// 기존 닉네임이 있으면 제거
 	if (!_client->getNickname().empty())
 		_server->removeClientNickname(_client->getNickname());
-	_client->setNickname(_args[0]);
-	_server->addClientNickname(_client->getNickname());
-	if (!_client->getUsername().empty())
+
+	// 새 닉네임 설정
+	_client->setNickname(newNick);
+	_server->addClientNickname(newNick);
+
+	// 사용자 이름이 이미 설정되어 있고 현재 LOGIN 상태라면 등록 완료
+	if (!_client->getUsername().empty() && _client->getClientState() == LOGIN)
 	{
 		_client->setId(_client->getNickname() + "!" + _client->getUsername() + "@" + _client->getHostname());
 		_client->setClientState(REGISTERED);
