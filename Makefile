@@ -26,7 +26,7 @@ OBJS = $(SRCS:.cpp=.o)
 
 INC_DIR = ./includes
 
-CPPFLAGS = -std=c++98	-fsanitize=address -Wall -Wextra -Werror 
+CPPFLAGS = -std=c++98  -Wall -Wextra -Werror  #-fsanitize=address
 
 
 
