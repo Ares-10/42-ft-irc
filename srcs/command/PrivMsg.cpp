@@ -2,9 +2,11 @@
 
 void PrivMsg::execute() {
   if (_client->getClientState() != REGISTERED)
-    throw std::runtime_error(Error::err_notregistered(_client->getNickname(), "PRIVMSG"));
+    throw std::runtime_error(
+        Error::err_notregistered(_client->getNickname(), "PRIVMSG"));
   if (_args.empty())
-    throw std::runtime_error(Error::err_norecipient(_client->getNickname(), "PRIVMSG"));
+    throw std::runtime_error(
+        Error::err_norecipient(_client->getNickname(), "PRIVMSG"));
   if (_args.size() == 1 || _args[1].empty())
     throw std::runtime_error(Error::err_notexttosend(_client->getNickname()));
 
@@ -37,7 +39,7 @@ void PrivMsg::execute() {
       for (std::map<int, Client *>::const_iterator const_it =
                operator_map.begin();
            const_it != operator_map.end(); const_it++) {
-        if (_client->getFd() != const_it->second->getFd()) continue;
+        if (_client->getFd() == const_it->second->getFd()) continue;
         const_it->second->write(":" + _client->getClientName() + " PRIVMSG @" +
                                 it->second + " :" + _args[1]);
       }
