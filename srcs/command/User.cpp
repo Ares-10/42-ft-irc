@@ -13,7 +13,7 @@ void User::execute()
 	{
 		_client->setId(_client->getNickname() + "!" + _client->getUsername() + "@" + _client->getHostname());
 		if (_client->getClientState() != LOGIN)
-			throw std::runtime_error(Error::err_incorrectpassword(_client->getNickname(), "PASS"));
+			throw std::runtime_error(Error::err_incorrectpassword(_client->getNickname()));
 		_client->setClientState(REGISTERED);
 		_server->sendMessage(_client, "001", ":Welcome to the Localnet IRC Network " + _client->getId());
 	}

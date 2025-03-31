@@ -48,9 +48,6 @@ class Error {
                                        const std::string &invitee_nick_name,
                                        const std::string &channel_name);
 
-  // 451 : 유저 등록이 완전히 되지 않은 경우 (getClientState() != REGISTERED)
-  static std::string err_notregistered();
-
   // 461 : 매개변수가 충분하지 않아 클라이언트 명령을 구문 분석할 수 없는 경우
   static std::string err_needmoreparams(const std::string &nick_name,
                                         const std::string &command);
@@ -89,26 +86,21 @@ class Error {
                                              const std::string &command);
 
   // 431
-  static std::string err_nonicknamegiven(const std::string &client_name,
-                                         const std::string &command);
+  static std::string err_nonicknamegiven(const std::string &client_name);
 
   // 432
   static std::string err_erroneousnickname(const std::string &client_name,
-                                           const std::string &nickname,
-                                           const std::string &command);
+                                           const std::string &nickname);
 
   // 433
   static std::string err_nicknamealreadyuse(const std::string &client_name,
-                                            const std::string &nickname,
-                                            const std::string &command);
+                                            const std::string &nickname);
 
   // 451 : 클라이언트가 서버에 등록되지 않음
-  static std::string err_notregistered(const std::string &client_name,
-                                       const std::string &command);
+  static std::string err_notregistered(const std::string &client_name);
 
   // 464 : 잘못된 비밀번호
-  static std::string err_incorrectpassword(const std::string &client_name,
-                                           const std::string &command);
+  static std::string err_incorrectpassword(const std::string &client_name);
 };
 
 #endif

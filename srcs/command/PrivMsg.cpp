@@ -3,10 +3,10 @@
 void PrivMsg::execute() {
   if (_client->getClientState() != REGISTERED)
     throw std::runtime_error(
-        Error::err_notregistered(_client->getNickname(), "PRIVMSG"));
+        Error::err_notregistered(_client->getNickname()));
   if (_args.empty())
     throw std::runtime_error(
-        Error::err_norecipient(_client->getNickname(), "PRIVMSG"));
+        Error::err_norecipient(_client->getNickname(), _command));
   if (_args.size() == 1 || _args[1].empty())
     throw std::runtime_error(Error::err_notexttosend(_client->getNickname()));
 

@@ -9,6 +9,6 @@ void Pass::execute()
 	if (_client->getClientState() == REGISTERED)
 		throw std::runtime_error(Error::err_unauthorizedcommand(_client->getNickname(), _command));
 	if (_args[0] != _server->getPassword())
-		throw std::runtime_error(Error::err_incorrectpassword(_client->getNickname(), _command));
+		throw std::runtime_error(Error::err_incorrectpassword(_client->getNickname()));
 	_client->setClientState(LOGIN);
 }

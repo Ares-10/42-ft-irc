@@ -2,7 +2,7 @@
 
 void Join::execute() {
   if (_client->getClientState() != REGISTERED) // 451
-    throw std::runtime_error(Error::err_notregistered(_client->getNickname(), _command));
+    throw std::runtime_error(Error::err_notregistered(_client->getNickname()));
   if (_args.empty()) // 461
     throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), _command));
 

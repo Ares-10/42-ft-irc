@@ -3,7 +3,7 @@
 void Invite::execute() {
   if (_client->getClientState() != REGISTERED)  // 451
     throw std::runtime_error(
-        Error::err_notregistered(_client->getNickname(), _command));
+        Error::err_notregistered(_client->getNickname()));
   if (_args.size() < 2)  // 461
     throw std::runtime_error(
         Error::err_needmoreparams(_client->getNickname(), _command));
