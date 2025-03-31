@@ -283,3 +283,14 @@ const std::string &Channel::getChannelGenerateTime() const
 {
 	return this->_channel_generate_time;
 }
+
+void Channel::broadcastMessage(const std::string &message, Client *excludeClient)
+{
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		Client *client = it->second;
+		if (excludeClient != NULL && client->getFd() == excludeClient->getFd())
+			continue;
+		client->write(message);
+	}
+}

@@ -93,6 +93,8 @@ class Channel {
 
   // static bool checkChannelKeyFormat(const std::string &channel_name); // mode
   // +k 일 때
+
+	void broadcastMessage(const std::string &message, Client *excludeClient);
 };
 
 #endif  // CHANNEL_HPP
