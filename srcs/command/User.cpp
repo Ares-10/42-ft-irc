@@ -10,7 +10,6 @@ void User::execute()
 		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "USER"));
 
 	_client->setUsername(_args[0]);
-	_client->setHostname(_args[2]);
 	_client->setRealname(_args[3]);
 	if (!_client->getNickname().empty())
 	{
