@@ -1,15 +1,10 @@
 #include "../../includes/Command.hpp"
 
 void Mode::execute() {
-  if (_client->getClientState() != REGISTERED) {  // 451
-    return _client->write(":" + _server->getServerName() + " " +
-                          Error::err_notregistered());
-  }
-  if (_args.size() < 1) {  // 461 mode 만 왔을 경우
-    return _client->write(
-        ":" + _server->getServerName() + " " +
-        Error::err_needmoreparams(_client->getNickname(), _command));
-  }
+  if (_client->getClientState() != REGISTERED)
+    throw std::runtime_error(Error::err_notregistered(_client->getNickname(), _command));
+  if (_args.size() < 1) // 461 mode 만 왔을 경우
+    throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), _command));
 
   int format_opt = 0;
   Channel *channel_ptr = _server->findChannel(_args[0]);

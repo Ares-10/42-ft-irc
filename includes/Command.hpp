@@ -30,7 +30,7 @@ protected:
 public:
 	virtual ~Command();
 
-	void setCommand(Client *client, Server *server, t_command cmd);
+	void setCommand(Client *client, Server *server, const t_command& cmd);
 
 	virtual void execute() = 0;
 };

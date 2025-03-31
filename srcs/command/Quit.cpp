@@ -7,7 +7,7 @@ void Quit::execute()
 		quitMessage = _args[0];
 	if (_client->getClientState() == REGISTERED)
 	{
-		std::string notification = ":" + _client->getId() + " QUIT";
+		std::string notification = ":" + _client->getId() + " " + _command;
 		if (!quitMessage.empty())
 			notification += " :" + quitMessage;
 		// 참여 중인 모든 채널에 QUIT 메시지 브로드캐스트

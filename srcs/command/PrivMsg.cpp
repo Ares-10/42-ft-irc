@@ -1,21 +1,12 @@
 #include "../../includes/Command.hpp"
 
 void PrivMsg::execute() {
-  if (_client->getClientState() != REGISTERED) {  // 451
-    return _client->write(":" + _server->getServerName() + " " +
-                          Error::err_notregistered());
-  }
-  if (_args.size() < 1) {
-    // 411 arg 1개
-    return _client->write(
-        ":" + _server->getServerName() + " " +
-        Error::err_norecipient(_client->getNickname(), "PRIVMSG"));
-  }
-  if (_args.size() == 1 || _args[1].length() == 0) {
-    // 412 PRIVMSG보낼 텍스트가 없음.
-    return _client->write(":" + _server->getServerName() + " " +
-                          Error::err_notexttosend(_client->getNickname()));
-  }
+  if (_client->getClientState() != REGISTERED)
+    throw std::runtime_error(Error::err_notregistered(_client->getNickname(), "PRIVMSG"));
+  if (_args.empty())
+    throw std::runtime_error(Error::err_norecipient(_client->getNickname(), "PRIVMSG"));
+  if (_args.size() == 1 || _args[1].empty())
+    throw std::runtime_error(Error::err_notexttosend(_client->getNickname()));
 
   // client, channel로 쪼개기
   // int 0 = client, 1 = channel, 2 = channel (only operator)

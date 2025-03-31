@@ -1,17 +1,10 @@
 #include "../../includes/Command.hpp"
 
 void Invite::execute() {
-  if (_client->getClientState() != REGISTERED) {  // 451
-    return _client->write(":" + _server->getServerName() + " " +
-                          Error::err_notregistered());
-  }
-  if (_args.size() < 2) {  // 461
-    return _client->write(
-        ":" + _server->getServerName() + " " +
-        Error::err_needmoreparams(_client->getNickname(), _command));
-  }
-  // if (_args.size() > 2)  // 암 것도 안함.
-  //   return;
+  if (_client->getClientState() != REGISTERED) // 451
+  	throw std::runtime_error(Error::err_notregistered(_client->getNickname(), _command));
+  if (_args.size() < 2) // 461
+  	throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), _command));
 
   Client *invitee_ptr = _server->findClientByNick(_args[0]);
   if (invitee_ptr == NULL) {  // server에 초대하고자 하는 client가 없음.

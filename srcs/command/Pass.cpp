@@ -4,11 +4,11 @@
 
 void Pass::execute()
 {
-	if (_args.size() < 1)
-		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "PASS"));
+	if (_args.empty())
+		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), _command));
 	if (_client->getClientState() == REGISTERED)
-		throw std::runtime_error(Error::err_unauthorizedcommand(_client->getNickname(), "PASS"));
+		throw std::runtime_error(Error::err_unauthorizedcommand(_client->getNickname(), _command));
 	if (_args[0] != _server->getPassword())
-		throw std::runtime_error(Error::err_incorrectpassword(_client->getNickname(), "PASS"));
+		throw std::runtime_error(Error::err_incorrectpassword(_client->getNickname(), _command));
 	_client->setClientState(LOGIN);
 }

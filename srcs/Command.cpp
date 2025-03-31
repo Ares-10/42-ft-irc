@@ -3,7 +3,7 @@
 Command::~Command() {
 }
 
-void Command::setCommand(Client *client, Server *server, t_command cmd)
+void Command::setCommand(Client *client, Server *server, const t_command& cmd)
 {
 	_command = cmd._command;
 	_args = cmd._args;

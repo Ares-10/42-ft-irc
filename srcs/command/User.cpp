@@ -3,9 +3,9 @@
 void User::execute()
 {
 	if (_client->getClientState() == REGISTERED)
-		throw std::runtime_error(Error::err_unauthorizedcommand(_client->getNickname(), "USER"));
+		throw std::runtime_error(Error::err_unauthorizedcommand(_client->getNickname(), _command));
 	if (_args.size() < 4)
-		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "USER"));
+		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), _command));
 
 	_client->setUsername(_args[0]);
 	_client->setRealname(_args[3]);

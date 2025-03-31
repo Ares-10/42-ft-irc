@@ -1,22 +1,10 @@
 #include "../../includes/Command.hpp"
 
 void Join::execute() {
-  if (_client->getClientState() != REGISTERED) {  // 451
-    return _client->write(":" + _server->getServerName() + " " +
-                          Error::err_notregistered());
-  }
-  // 나중에 지우기
-  // std::cout << "join test\n";
-  // std::cout << "arg size : " << _args.size() << std::endl;
-  // for (int i = 0; i < _args.size(); i++)
-  //   std::cout << "args " << i << " : " << _args[i];
-  if (_args.size() < 1) {  // 461
-    return _client->write(
-        ":" + _server->getServerName() + " " +
-        Error::err_needmoreparams(_client->getNickname(), _command));
-  }
-  // if (_args.size() > 2)  // 암 것도 안함.
-  //   return;
+  if (_client->getClientState() != REGISTERED) // 451
+    throw std::runtime_error(Error::err_notregistered(_client->getNickname(), _command));
+  if (_args.empty()) // 461
+    throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), _command));
 
   if (_args.size() == 1 && _args[0] == "0") {  // channel 다 나감. (part 이용)
     std::vector<std::string> channel_names = _client->getChannelNames();
