@@ -5,24 +5,24 @@ void Part::execute() {
     return _client->write(":" + _server->getServerName() + " " +
                           Error::err_notregistered());
   }
-  if (_args.size() < 2) {  // 461
+  if (_args.size() < 1) {  // 461
     return _client->write(
         ":" + _server->getServerName() + " " +
         Error::err_needmoreparams(_client->getNickname(), _command));
   }
-  //   if (_args.size() > 3)  // 암 것도 안함.
+  //   if (_args.size() > 2)  // 암 것도 안함.
   //     return;
 
   std::string reason_str = " :";
-  _args.size() == 3 ? reason_str += _args[2] : reason_str = "";
+  _args.size() == 2 ? reason_str += _args[1] : reason_str = "";
   size_t pos = 0;
   std::string channel_str;
   int format_opt = 0;  // channel format error code
-  for (size_t i = 0; i < _args[1].length(); i++) {
+  for (size_t i = 0; i < _args[0].length(); i++) {
     format_opt = 0;
-    if (_args[1][i] == ',') {
+    if (_args[0][i] == ',') {
       if (pos < i) {
-        channel_str = _args[1].substr(pos, i - pos);
+        channel_str = _args[0].substr(pos, i - pos);
         Channel *channel_ptr = _server->findChannel(channel_str);
         if (Channel::checkChannelNameFormat(channel_str, &format_opt) &&
             channel_ptr) {
@@ -63,8 +63,8 @@ void Part::execute() {
       pos = i + 1;
     }
     // 문자열의 끝부분에서 남은 channel처리
-    else if (i == _args[1].length() - 1 && pos <= i && _args[1][i] != ',') {
-      channel_str = _args[1].substr(pos, i - pos + 1);
+    else if (i == _args[0].length() - 1 && pos <= i && _args[0][i] != ',') {
+      channel_str = _args[0].substr(pos, i - pos + 1);
       Channel *channel_ptr = _server->findChannel(channel_str);
       if (Channel::checkChannelNameFormat(channel_str, &format_opt) &&
           channel_ptr) {

@@ -4,24 +4,34 @@
 
 Server::Server(int port, std::string pass)
     : _password(pass), _parser(new Parser()) {
-  _server_name = "ft_irc";
-  _server_fd = socket(AF_INET, SOCK_STREAM, 0);
-  if (_server_fd == -1) throw std::runtime_error("Socket creation failed");
+  try {
+    _server_name = "ft_irc";
+    _server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (_server_fd == -1) {
+      throw std::runtime_error("Socket creation failed");
+    }
 
-  sockaddr_in server_addr = {};
-  server_addr.sin_family = AF_INET;
-  server_addr.sin_port = htons(port);
-  server_addr.sin_addr.s_addr = INADDR_ANY;
+    sockaddr_in server_addr = {};
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(port);
+    server_addr.sin_addr.s_addr = INADDR_ANY;
 
-  if (bind(_server_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) ==
-      -1)
-    throw std::runtime_error("Binding failed");
+    if (bind(_server_fd, (struct sockaddr *)&server_addr,
+             sizeof(server_addr)) == -1) {
+      throw std::runtime_error("Binding failed");
+    }
 
-  if (listen(_server_fd, 10) == -1)
-    throw std::runtime_error("Listening failed");
+    if (listen(_server_fd, 10) == -1) {
+      throw std::runtime_error("Listening failed");
+    }
 
-  pollfd server_poll = {_server_fd, POLLIN, 0};
-  _pfds.push_back(server_poll);
+    pollfd server_poll = {_server_fd, POLLIN, 0};
+    _pfds.push_back(server_poll);
+  } catch (...) {
+    delete _parser;
+    _parser = NULL;  // NULL로 설정하여 소멸자에서 중복 삭제 방지
+    throw;
+  }
 }
 
 void Server::run() {
@@ -130,7 +140,7 @@ Server::~Server() {
   for (std::map<int, Client *>::iterator it = _clients.begin();
        it != _clients.end(); it++)
     delete it->second;
-  delete _parser;
+  if (_parser) delete _parser;
 
   // Channel부분 new로 만든다고 가정.
   for (std::map<std::string, Channel *>::iterator it = _channels.begin();

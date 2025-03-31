@@ -3,27 +3,27 @@
 void Names::execute()  // channel_list부분 미완..
 {
   std::vector<Channel *> channel_vec;
-  if (_args.size() > 1) {
+  if (_args.size() > 0) {
     size_t pos = 0;
     std::string args_str;
-    for (size_t i = 0; i < _args[1].length(); i++) {
-      if (i == 0 && _args[1][i] == ':')  // 맨 앞에 : 이 왔을때에 대한 예외처리
+    for (size_t i = 0; i < _args[0].length(); i++) {
+      if (i == 0 && _args[0][i] == ':')  // 맨 앞에 : 이 왔을때에 대한 예외처리
       {
         i++;
-        if (1 < _args[1].length() && _args[1][i] == ',') {
+        if (1 < _args[0].length() && _args[0][i] == ',') {
           pos = i + 1;
         } else
           pos = i;
-      } else if (_args[1][i] == ',') {
+      } else if (_args[0][i] == ',') {
         if (pos < i) {
-          args_str = _args[1].substr(pos, i - pos);
+          args_str = _args[0].substr(pos, i - pos);
           Channel *temp_channel = _server->findChannel(args_str);
           if (temp_channel)
             channel_vec.push_back(temp_channel);  // 서버에 존재하는 channel
         }
         pos = i + 1;
-      } else if (i == _args[1].length() - 1 && pos <= i && _args[1][i] != ',') {
-        args_str = _args[1].substr(pos, i - pos + 1);
+      } else if (i == _args[0].length() - 1 && pos <= i && _args[0][i] != ',') {
+        args_str = _args[0].substr(pos, i - pos + 1);
         Channel *temp_channel = _server->findChannel(args_str);
         if (temp_channel)
           channel_vec.push_back(temp_channel);  // 서버에 존재하는 channel
@@ -63,7 +63,7 @@ void Names::execute()  // channel_list부분 미완..
   if (channel_vec.size() == 0)
     return_str += ":End of /NAMES list";
   else if (channel_vec.size() == 1) {
-    return_str += channel_vec[0]->getChannelName() + " :End of /NAMES list";
+    return_str += channel_vec[0]->getChannelName() + " :End of /NAMES list.";
   } else
     return_str += "* :End of /NAMES list";
   _client->write(return_str);

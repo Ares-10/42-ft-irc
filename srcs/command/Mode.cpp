@@ -5,27 +5,27 @@ void Mode::execute() {
     return _client->write(":" + _server->getServerName() + " " +
                           Error::err_notregistered());
   }
-  if (_args.size() < 2) {  // 461 mode 만 왔을 경우
+  if (_args.size() < 1) {  // 461 mode 만 왔을 경우
     return _client->write(
         ":" + _server->getServerName() + " " +
         Error::err_needmoreparams(_client->getNickname(), _command));
   }
 
   int format_opt = 0;
-  Channel *channel_ptr = _server->findChannel(_args[1]);
-  if (!Channel::checkChannelNameFormat(_args[1], &format_opt) ||
+  Channel *channel_ptr = _server->findChannel(_args[0]);
+  if (!Channel::checkChannelNameFormat(_args[0], &format_opt) ||
       channel_ptr == NULL) {  // 채널 양식이 틀렸거나, 채널 존재 x
     if (format_opt == 2)      // 403
       return _client->write(
           ":" + _server->getServerName() + " " +
-          Error::err_nosuchchannel(_client->getNickname(), _args[1]));
+          Error::err_nosuchchannel(_client->getNickname(), _args[0]));
     else {  // 476 원래는 476이어야 할 것 같은데, libera에서는 479을 뱉음.
             // (공식문서에는 479가 없는 것 같음.)
       return _client->write(":" + _server->getServerName() + " " +
-                            Error::err_badchanmask(_args[1]));
+                            Error::err_badchanmask(_args[0]));
     }
   }
-  if (_args.size() == 2) {  // mode <channel>
+  if (_args.size() == 1) {  // mode <channel>
     // 324 : mode 출력
     _client->write(":" + _server->getServerName() + " 324 " +
                    _client->getNickname() + " " +
@@ -39,35 +39,35 @@ void Mode::execute() {
     return;
   }
   // 혹시나.. mode #yuyu :
-  if (_args[2].size() <= 0) return;
+  if (_args[1].size() <= 0) return;
 
   std::string mode_str;
   char prev_sign = 0;  // 이거 생각해보기.
   char curr_sign = '+';
   int arg_idx = 3;
 
-  if (_args[2][0] == '-') {
+  if (_args[1][0] == '-') {
     curr_sign = '-';
   }
 
   //   for () 한바퀴 순회하면서 쓰레기 정리 & 에러 체크 461, 472
   // mode #yuyu -i+t-o nick_name 과 같은 경우에서 +t가 나가리가 되면,
   // -io로 뜨는지 -i-o로 뜨는지 체크해보기. => -io로 뜸.
-  for (size_t i = 0; i < _args[2].size(); i++) {
-    if (_args[2][i] == '+' || _args[2][i] == '-') {
-      curr_sign = _args[2][i];
-    } else if (Channel::checkChannelModeFormat(_args[2][i])) {
+  for (size_t i = 0; i < _args[1].size(); i++) {
+    if (_args[1][i] == '+' || _args[1][i] == '-') {
+      curr_sign = _args[1][i];
+    } else if (Channel::checkChannelModeFormat(_args[1][i])) {
       // if (prev_sign != curr_sign) {
       //   mode_str += curr_sign;
       //   prev_sign = curr_sign;
       // }
-      // mode_str += _args[2][i];
+      // mode_str += _args[1][i];
       // 위와 똑같이 실행되는지 테스트 하기.
-      makeReturnStr(prev_sign, curr_sign, _args[2][i], mode_str);
+      makeReturnStr(prev_sign, curr_sign, _args[1][i], mode_str);
 
       // 인자 필요한지 확인하고 필요하다면, 인자 개수가 부족한지 (461인지) 체크
-      if ((_args[2][i] == 'k' || _args[2][i] == 'o' ||
-           (_args[2][i] == 'l' && curr_sign == '+')) &&
+      if ((_args[1][i] == 'k' || _args[1][i] == 'o' ||
+           (_args[1][i] == 'l' && curr_sign == '+')) &&
           ++arg_idx > _args.size()) {
         // 인자 개수 부족 (461)
         return _client->write(
@@ -78,7 +78,7 @@ void Mode::execute() {
       // 472 : 이상한 channel mode
       return _client->write(
           ":" + _server->getServerName() + " " +
-          Error::err_unknownmode(_client->getNickname(), _args[2][i]));
+          Error::err_unknownmode(_client->getNickname(), _args[1][i]));
     }
   }
   if (mode_str.length() < 1) return;
@@ -89,12 +89,12 @@ void Mode::execute() {
     // 482
     return _client->write(
         ":" + _server->getServerName() + " " +
-        Error::err_chanoprivsneeded(_client->getNickname(), _args[1]));
+        Error::err_chanoprivsneeded(_client->getNickname(), _args[0]));
   }
 
   std::string return_mode_str;
   std::vector<std::string> return_arg_vec;
-  arg_idx = 3;
+  arg_idx = 2;
   prev_sign = mode_str[0];
   curr_sign = '+';  // 혹시 모르니까.
   for (size_t i = 0; i < mode_str.length(); i++) {
@@ -107,7 +107,8 @@ void Mode::execute() {
         // + 인데 없음.
         channel_ptr->addChannelMode(mode_str[i]);
         makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
-      } else if (curr_sign == '-' && channel_ptr->findChannelMode(mode_str[i])) {
+      } else if (curr_sign == '-' &&
+                 channel_ptr->findChannelMode(mode_str[i])) {
         // - 인데 있음.
         channel_ptr->removeChannelMode(mode_str[i]);
         makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
@@ -197,7 +198,7 @@ void Mode::execute() {
   // :nick_name!~user_name@121.135.181.42 MODE #yuyu -o+o nock nock
   if (return_mode_str.length() > 0) {
     std::string write_str = ":" + _client->getClientName() + " MODE " +
-                            _args[1] + " " + return_mode_str;
+                            _args[0] + " " + return_mode_str;
     for (std::vector<std::string>::iterator iter = return_arg_vec.begin();
          iter != return_arg_vec.end(); iter++) {
       write_str += " " + *iter;

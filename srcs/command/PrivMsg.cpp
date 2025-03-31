@@ -5,13 +5,13 @@ void PrivMsg::execute() {
     return _client->write(":" + _server->getServerName() + " " +
                           Error::err_notregistered());
   }
-  if (_args.size() < 2) {
+  if (_args.size() < 1) {
     // 411 arg 1개
     return _client->write(
         ":" + _server->getServerName() + " " +
         Error::err_norecipient(_client->getNickname(), "PRIVMSG"));
   }
-  if (_args.size() == 2 || _args[2].length() == 0) {
+  if (_args.size() == 1 || _args[1].length() == 0) {
     // 412 PRIVMSG보낼 텍스트가 없음.
     return _client->write(":" + _server->getServerName() + " " +
                           Error::err_notexttosend(_client->getNickname()));
@@ -28,7 +28,7 @@ void PrivMsg::execute() {
     if (it->first == 0) {  // 0 client
       _server->findClientByNick(it->second)
           ->write(":" + _client->getClientName() + " PRIVMSG " + it->second +
-                  " :" + _args[2]);
+                  " :" + _args[1]);
     } else if (it->first == 1) {  // 1 channel
       std::map<int, Client *> client_map =
           _server->findChannel(it->second)->getClients();
@@ -38,7 +38,7 @@ void PrivMsg::execute() {
         if (_client->getFd() == const_it->second->getFd())  // 같은 사람
           continue;
         const_it->second->write(":" + _client->getClientName() + " PRIVMSG " +
-                                it->second + " :" + _args[2]);
+                                it->second + " :" + _args[1]);
       }
     } else {  // 2 channel operator
       std::map<int, Client *> operator_map =
@@ -48,7 +48,7 @@ void PrivMsg::execute() {
            const_it != operator_map.end(); const_it++) {
         if (_client->getFd() != const_it->second->getFd()) continue;
         const_it->second->write(":" + _client->getClientName() + " PRIVMSG @" +
-                                it->second + " :" + _args[2]);
+                                it->second + " :" + _args[1]);
       }
     }
   }
@@ -57,10 +57,10 @@ void PrivMsg::execute() {
 void PrivMsg::makeClientChannelVec() {
   size_t pos = 0;
   std::string temp_str;
-  for (size_t i = 0; i < _args[1].length(); i++) {
-    if (_args[1][i] == ',') {
+  for (size_t i = 0; i < _args[0].length(); i++) {
+    if (_args[0][i] == ',') {
       if (pos < i) {
-        temp_str = _args[1].substr(pos, i - pos);
+        temp_str = _args[0].substr(pos, i - pos);
         if (_server->findClientByNick(temp_str)) {
           // server에 찾고자 하는 client 존재
           _nick_channel_vec.push_back(std::make_pair(0, temp_str));
@@ -92,8 +92,8 @@ void PrivMsg::makeClientChannelVec() {
         }
       }
       pos = i + 1;
-    } else if (i == _args[1].length() - 1 && pos <= i) {
-      temp_str = _args[1].substr(pos, i - pos + 1);
+    } else if (i == _args[0].length() - 1 && pos <= i) {
+      temp_str = _args[0].substr(pos, i - pos + 1);
       if (_server->findClientByNick(temp_str)) {
         // server에 찾고자 하는 client 존재
         _nick_channel_vec.push_back(std::make_pair(0, temp_str));
