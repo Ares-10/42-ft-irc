@@ -25,12 +25,4 @@ void Nick::execute()
 	// 새 닉네임 설정
 	_client->setNickname(newNick);
 	_server->addClientNickname(newNick);
-
-	// 사용자 이름이 이미 설정되어 있고 현재 LOGIN 상태라면 등록 완료
-	if (!_client->getUsername().empty() && _client->getClientState() == LOGIN)
-	{
-		_client->setId(_client->getNickname() + "!" + _client->getUsername() + "@" + _client->getHostname());
-		_client->setClientState(REGISTERED);
-		_server->sendMessage(_client, "001", ":Welcome to the Localnet IRC Network " + _client->getId());
-	}
 }
