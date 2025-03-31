@@ -127,12 +127,6 @@ std::string Error::err_incorrectpassword(const std::string &client_name,
   return "464 " + client_name + " " + command + " :Incorrect password.";
 }
 
-std::string Error::err_needtoauth(const std::string &client_name,
-                                  const std::string &command) {
-  return "998 " + client_name + " " + command +
-         " :You need to authenticate first.";
-}
-
 std::string Error::err_nonicknamegiven(const std::string &client_name,
                                        const std::string &command) {
   return "431 " + client_name + " " + command + " :No nickname given.";

@@ -109,10 +109,6 @@ class Error {
   // 464 : 잘못된 비밀번호
   static std::string err_incorrectpassword(const std::string &client_name,
                                            const std::string &command);
-
-  // 998 : You need to authenticate first
-  static std::string err_needtoauth(const std::string &client_name,
-                                    const std::string &command);
 };
 
 #endif
