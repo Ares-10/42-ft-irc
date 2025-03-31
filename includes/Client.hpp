@@ -27,7 +27,7 @@ class Client {
   std::string _realname;  // 실제 이름 ??
   std::string _hostname;  // client ip 주소
 
-  std::string _id;
+  std::string _id; // nickname!username@hostname
 
   ClientState _state;
   std::map<std::string, Channel *> _channels;  // key : channel_name

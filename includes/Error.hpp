@@ -55,18 +55,13 @@ class Error {
   static std::string err_needmoreparams(const std::string &nick_name,
                                         const std::string &command);
 
-  // 471 : channel이 (+l) 모드이고 가득 찼을 때
-  static std::string err_channelisfull(const std::string &nick_name,
-                                       const std::string &channel_name);
+	// 471 : channel이 (+l) 모드이고 가득 찼을 때
+	static std::string err_channelisfull(const std::string &nick_name,
+										const std::string &channel_name);
 
   // 472 : 클라이언트가 사용하는 모드 문자가 서버에서 인식되지 않음을 나타냅니다
   static std::string err_unknownmode(const std::string &nick_name,
                                      char mode_char);
-
-  // 473 : JOIN채널이 [초대 전용] 모드로 설정되어 있고 클라이언트가 채널에 초대
-  // 되지 않았거나 초대 예외가 설정되지 않았기 때문에 명령이 실패 (+i)
-  static std::string err_inviteonlychan(const std::string &nick_name,
-                                        const std::string &channel_name);
 
   // 475 : JOIN채널에 키가 필요하고 키가 잘못되었거나 제공되지 않았기 때문에
   // 명령이 실패 (+k)
@@ -76,6 +71,12 @@ class Error {
   // 476 : 유효하지 않은 channel 형식일 때 발생.
   // 이거 libera에서는 479로 나오는 듯.
   static std::string err_badchanmask(const std::string &channel_name);
+  
+	// 473 : JOIN채널이 [초대 전용] 모드로 설정되어 있고 클라이언트가 채널에 초대
+	// 되지 않았거나 초대 예외가 설정되지 않았기 때문에 명령이 실패 (+i)
+	static std::string err_inviteonlychan(const std::string &nick_name,
+										const std::string &channel_name);
+
 
   // 482 : 클라이언트에 적절한 채널 권한이 없기 때문에 명령이 실패했음.
   static std::string err_chanoprivsneeded(const std::string &nick_name,
