@@ -48,17 +48,8 @@ void Kick::execute() {
       iter->second->write(write_str);
     }
     // client(kick 당한 사람)에서 channel 삭제 => channel에서 해당 client 삭제
-    channel_ptr->findClientByNick(*it)->quitChannel(
-        channel_ptr->getChannelName());
-    // // channel에서 해당 client 삭제 .. quitChannel에서 알아서 처리해줌.
-    // channel_ptr->removeOperator(channel_ptr->findClientByNick(*it)->getFd());
-    // channel_ptr->removeClient(channel_ptr->findClientByNick(*it)->getFd());
+    channel_ptr->findClientByNick(*it)->quitChannel(channel_ptr->getChannelName());
   }
-
-  // channel 삭제 여부 확인
-  if (channel_ptr->getClientNumber() < 1)  // channel에 아무도 없으면
-    _server->removeChannel(
-        channel_ptr->getChannelName());  // server에서 channel제거
 }
 
 void Kick::makeClientVec(Channel *channel_ptr) {

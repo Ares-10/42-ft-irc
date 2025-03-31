@@ -55,8 +55,7 @@ class Client {
 
   void broadcastToAllChannels(const std::string &message);
 
-  // 나간 channel의 이름을 return
-  bool quitChannel(const std::string &channel_name);
+  void quitChannel(const std::string &channel_name);
   void quitAllChannel();
 
   Channel *findChannel(const std::string &channel_name);  // 없으면 null 반환.

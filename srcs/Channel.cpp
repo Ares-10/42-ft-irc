@@ -113,18 +113,26 @@ bool Channel::decreaseClientNumber()
 	return true;
 }
 
-bool Channel::removeClient(
-	int client_fd)
+bool Channel::removeClient(int client_fd)
 {
-	// 이거 쓴다음 꼭 _client_number 수 확인하기.
+	// 클라이언트가 채널에 존재하는지 확인
 	std::map<int, Client *>::iterator it = _clients.find(client_fd);
-	if (it != _clients.end())
-	{
-		_clients.erase(it);
-		decreaseClientNumber();
-		return true;
-	}
-	return false; // 못찾음. (삭제 실패)
+	if (it == _clients.end())
+		return false; // 클라이언트가 채널에 없음 (삭제 실패)
+
+	// 클라이언트가 운영자인 경우 운영자 목록에서도 제거
+	removeOperator(client_fd);
+
+	// 클라이언트를 채널에서 제거
+	_clients.erase(it);
+
+	// 클라이언트 수 감소
+	decreaseClientNumber();
+
+	// 채널에 남은 클라이언트가 없으면 서버에 채널 삭제
+	if (_clients.empty())
+		_server->removeChannel(_channel_name);
+	return true;
 }
 
 bool Channel::removeOperator(int client_fd)

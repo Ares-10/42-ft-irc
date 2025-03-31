@@ -32,9 +32,6 @@ void Part::execute() {
             }
             // channel 나가기
             _client->quitChannel(channel_str);
-            if (channel_ptr->getClientNumber() < 1)  // channel에 아무도 없으면
-              _server->removeChannel(channel_str);   // server에서 channel제거
-
           } else {  // 442 channel에 client 없음.
             _client->write(
                 ":" + _server->getServerName() + " " +
@@ -72,9 +69,6 @@ void Part::execute() {
           }
           // channel 나가기
           _client->quitChannel(channel_str);
-          if (channel_ptr->getClientNumber() < 1)  // channel에 아무도 없으면
-            _server->removeChannel(channel_str);   // server에서 channel제거
-
         } else {  // 442 channel에 client 없음.
           _client->write(
               ":" + _server->getServerName() + " " +

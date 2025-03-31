@@ -62,28 +62,17 @@ void Client::setHostname(const std::string &hostname) { _hostname = hostname; }
 
 void Client::setId(const std::string &id) { _id = id; }
 
-bool Client::quitChannel(const std::string &channel_name)
+void Client::quitChannel(const std::string &channel_name)
 {
-	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
-		it != _channels.end(); it++)
+	std::map<std::string, Channel *>::iterator it = _channels.find(channel_name);
+
+	// 채널을 찾음
+	if (it != _channels.end())
 	{
-		if (it->second->getChannelName() == channel_name)
-		{
-			Channel *temp = it->second;
-			_channels.erase(it); // client에서 해당 channel연결 해제.
-			if (temp->removeClient(_fd)) // channel에서 해당 유저 삭제.
-			{
-				temp->removeOperator(_fd);
-				// 삭제 성공
-				return true;
-			} else
-			{
-				std::cout << "quitChannel : " << channel_name
-						<< " 삭제 실패 (해당하는 channel이 없음.)\n";
-			}
-		}
+		Channel *channel = it->second;
+		_channels.erase(it); // client에서 해당 channel 연결 해제
+		channel->removeClient(_fd);
 	}
-	return false; // client가 해당 channel에 있지 않음.
 }
 
 void Client::broadcastToAllChannels(const std::string &message)
@@ -108,38 +97,20 @@ void Client::broadcastToAllChannels(const std::string &message)
 
 void Client::quitAllChannel()
 {
-	// 맵을 순회하면서 삭제하면 반복자가 무효화되므로 채널 목록을 먼저 복사
 	std::vector<Channel *> channelsToQuit;
 
-	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
-		it != _channels.end(); ++it)
-	{
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it)
 		channelsToQuit.push_back(it->second);
-	}
 
-	// 복사한 목록을 사용하여 채널에서 나감
-	for (std::vector<Channel *>::iterator it = channelsToQuit.begin();
-		it != channelsToQuit.end(); ++it)
+	// 채널 맵 비우기
+	_channels.clear();
+
+	// 각 채널에서 클라이언트 제거
+	for (std::vector<Channel *>::iterator it = channelsToQuit.begin(); it != channelsToQuit.end(); ++it)
 	{
 		Channel *channel = *it;
-
-		// 클라이언트의 채널 맵에서 제거
-		_channels.erase(channel->getChannelName());
-
-		// 채널에서 클라이언트 제거
-		if (channel->removeClient(_fd))
-		{
-			channel->removeOperator(_fd);
-			// 삭제 성공 시 추가 로직이 필요하면 여기에 구현
-		} else
-		{
-			std::cout << "quitAllChannel : " << channel->getChannelName()
-					<< " 삭제 실패 (해당하는 channel이 없음.)\n";
-		}
+		channel->removeClient(_fd);
 	}
-
-	// 채널 목록 비우기
-	_channels.clear();
 }
 
 Channel *Client::findChannel(const std::string &channel_name)
@@ -147,10 +118,8 @@ Channel *Client::findChannel(const std::string &channel_name)
 	// 없으면 null 반환.
 	std::map<std::string, Channel *>::iterator it = _channels.find(channel_name);
 	if (it != _channels.end())
-	{
 		return it->second;
-	} else
-		return NULL;
+	return NULL;
 }
 
 bool Client::addChannel(Channel *channel)
