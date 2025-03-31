@@ -106,6 +106,11 @@ void Join::execute() {
       }
       // 모두 통과.
       else {
+        // check
+        // std::cout << channel_ptr->getClientLimit() << " : "
+        //           << channel_ptr->getClientNumber() << std::endl;
+        // check
+
         channel_ptr->addClient(_client);
         _client->addChannel(channel_ptr);
         // 초대 받았었다면 invited_client에서 삭제
