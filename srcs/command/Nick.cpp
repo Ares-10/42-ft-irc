@@ -2,10 +2,6 @@
 
 void Nick::execute()
 {
-	// 클라이언트 상태가 HANDSHAKE(비밀번호 인증 전)라면 인증이 필요하다는 오류
-	if (_client->getClientState() == HANDSHAKE)
-		throw std::runtime_error(Error::err_needtoauth(_client->getNickname(), "NICK"));
-
 	if (_args.empty())
 		throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), "NICK"));
 
