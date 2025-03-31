@@ -53,6 +53,8 @@ class Client {
   void setId(const std::string &id);
   void setClientState(ClientState state);
 
+  void broadcastToAllChannels(const std::string &message);
+
   // 나간 channel의 이름을 return
   bool quitChannel(const std::string &channel_name);
   void quitAllChannel();
