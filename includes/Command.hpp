@@ -11,121 +11,143 @@ class Server;
 class Client;
 class Channel;
 
-typedef struct s_command {
-  std::vector<std::string> _args;
-  std::string _command;
-  bool _invalid_message;
+typedef struct s_command
+{
+	std::vector<std::string> _args;
+	std::string _command;
+	bool _invalid_message;
 } t_command;
 
-class Command {
- protected:
-  std::vector<std::string> _args;
-  std::string _command;
+class Command
+{
+protected:
+	std::vector<std::string> _args;
+	std::string _command;
 
-  Client *_client;
-  Server *_server;
+	Client *_client;
+	Server *_server;
 
- public:
-  void setCommand(Client *client, Server *server, t_command cmd);
+public:
+	virtual ~Command();
 
-  virtual void execute() = 0;
+	void setCommand(Client *client, Server *server, t_command cmd);
+
+	virtual void execute() = 0;
 };
 
-class Notice : public Command {
- public:
-  void execute();
+class Notice : public Command
+{
+public:
+	void execute();
 };
 
-class PrivMsg : public Command {
- private:
-  // int 0 = client, 1 = channel, 2 = channel (only operator)
-  std::vector<std::pair<int, std::string> > _nick_channel_vec;
-  void makeClientChannelVec();
+class PrivMsg : public Command
+{
+private:
+	// int 0 = client, 1 = channel, 2 = channel (only operator)
+	std::vector<std::pair<int, std::string> > _nick_channel_vec;
 
- public:
-  void execute();
+	void makeClientChannelVec();
+
+public:
+	void execute();
 };
 
-class Part : public Command {
- public:
-  void execute();
+class Part : public Command
+{
+public:
+	void execute();
 };
 
-class Quit : public Command {
- public:
-  void execute();
+class Quit : public Command
+{
+public:
+	void execute();
 };
 
-class Join : public Command {
- private:
-  std::vector<std::string> _channels;
-  std::vector<std::string> _keys;
+class Join : public Command
+{
+private:
+	std::vector<std::string> _channels;
+	std::vector<std::string> _keys;
 
-  void makeChannelVec();
-  void makeKeyVec();
-  //   void sendJoinMsg(std::string channel_name, Client *receiver); 미완
+	void makeChannelVec();
 
- public:
-  void execute();
+	void makeKeyVec();
+
+	//   void sendJoinMsg(std::string channel_name, Client *receiver); 미완
+
+public:
+	void execute();
 };
 
-class User : public Command {
- public:
-  void execute();
+class User : public Command
+{
+public:
+	void execute();
 };
 
-class Nick : public Command {
- public:
-  void execute();
+class Nick : public Command
+{
+public:
+	void execute();
 };
 
-class Pass : public Command {
- public:
-  void execute();
+class Pass : public Command
+{
+public:
+	void execute();
 };
 
-class Kick : public Command {
- private:
-  std::vector<std::string> _kickClientVec;
+class Kick : public Command
+{
+private:
+	std::vector<std::string> _kickClientVec;
 
-  void makeClientVec(Channel *channel_ptr);
+	void makeClientVec(Channel *channel_ptr);
 
- public:
-  void execute();
+public:
+	void execute();
 };
 
-class Ping : public Command {
- public:
-  void execute();
+class Ping : public Command
+{
+public:
+	void execute();
 };
 
-class Pong : public Command {
- public:
-  void execute();
+class Pong : public Command
+{
+public:
+	void execute();
 };
 
-class Mode : public Command {
- private:
-  void makeReturnStr(char &prev_sign, char curr_sign, char mode_c,
-                     std::string &return_mode_str);
+class Mode : public Command
+{
+private:
+	void makeReturnStr(char &prev_sign, char curr_sign, char mode_c,
+						std::string &return_mode_str);
 
- public:
-  void execute();
+public:
+	void execute();
 };
 
-class Names : public Command {
- public:
-  void execute();
+class Names : public Command
+{
+public:
+	void execute();
 };
 
-class Topic : public Command {
- public:
-  void execute();
+class Topic : public Command
+{
+public:
+	void execute();
 };
 
-class Invite : public Command {
- public:
-  void execute();
+class Invite : public Command
+{
+public:
+	void execute();
 };
 
 #endif  // COMMAND_HPP

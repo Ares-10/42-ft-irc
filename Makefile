@@ -20,6 +20,8 @@ SRCS =  srcs/main.cpp				\
 		srcs/command/User.cpp		\
 		srcs/command/Pass.cpp		\
 		srcs/command/Names.cpp		\
+		srcs/command/Invite.cpp		\
+		srcs/command/Topic.cpp		\
 
 OBJS = $(SRCS:.cpp=.o)
 

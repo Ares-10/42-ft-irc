@@ -103,11 +103,11 @@ void Mode::execute() {
       continue;
     }
     if (mode_str[i] == 'i' || mode_str[i] == 't') {  // mode i,t (type d)
-      if (curr_sign = '+' && !channel_ptr->findChannelMode(mode_str[i])) {
+      if (curr_sign == '+' && !channel_ptr->findChannelMode(mode_str[i])) {
         // + 인데 없음.
         channel_ptr->addChannelMode(mode_str[i]);
         makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
-      } else if (curr_sign = '-' && channel_ptr->findChannelMode(mode_str[i])) {
+      } else if (curr_sign == '-' && channel_ptr->findChannelMode(mode_str[i])) {
         // - 인데 있음.
         channel_ptr->removeChannelMode(mode_str[i]);
         makeReturnStr(prev_sign, curr_sign, mode_str[i], return_mode_str);
@@ -132,7 +132,7 @@ void Mode::execute() {
         continue;
       }
       // 올바르게 존재한다면, operator에 추가
-      if (curr_sign = '+')
+      if (curr_sign == '+')
         channel_ptr->addOperator(invitee_ptr);
       else
         channel_ptr->removeOperator(invitee_ptr->getFd());

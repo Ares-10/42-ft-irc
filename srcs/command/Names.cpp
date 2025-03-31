@@ -7,7 +7,7 @@ void Names::execute()  // channel_list부분 미완..
     size_t pos = 0;
     std::string args_str;
     for (size_t i = 0; i < _args[1].length(); i++) {
-      if (i = 0 && _args[1][i] == ':')  // 맨 앞에 : 이 왔을때에 대한 예외처리
+      if (i == 0 && _args[1][i] == ':')  // 맨 앞에 : 이 왔을때에 대한 예외처리
       {
         i++;
         if (1 < _args[1].length() && _args[1][i] == ',') {

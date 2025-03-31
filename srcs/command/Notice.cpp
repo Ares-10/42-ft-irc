@@ -20,7 +20,7 @@ void Notice::execute()
 	}
 
 	// to client
-	Client *dest = _server->findClient(target);
+	Client *dest = _server->findClientByNick(target);
 	if (!dest)
 		throw std::runtime_error(Error::err_nosuchnick(_client->getNickname(), "NOTICE"));
 	dest->write(":" + _client->getId() + " NOTICE " + target + " :" + message);
