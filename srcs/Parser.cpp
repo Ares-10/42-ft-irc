@@ -35,6 +35,10 @@ Command *Parser::parse(Client *client, Server *server, std::string message) {
     command = new Mode();
   else if (cmd._command == "NAMES")
     command = new Names();
+  else if (cmd._command == "INVITE")
+    command = new Invite();
+  else if (cmd._command == "TOPIC")
+    command = new Topic();
   else  // 잘못된 명령어 오류처리 필요
     return NULL;
   command->setCommand(client, server, cmd);
