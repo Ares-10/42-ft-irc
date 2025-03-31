@@ -2,14 +2,13 @@
 
 Channel::Channel(Server *server, Client *client,
 				const std::string &channel_name): _server(server),
-	_channel_name(channel_name),
-	_channel_generate_time(server->getCurTime())
+												_channel_name(channel_name),
+												_channel_generate_time(server->getCurTime())
 {
 	_channel_topic = "";
 	_channel_key = "";
 	_channel_mode = "nst";
 	_client_limit = std::numeric_limits<unsigned int>::max();
-	_client_number = 1;
 
 	_clients[client->getFd()] = client;
 	_operators[client->getFd()] = client;
@@ -24,7 +23,6 @@ Channel::Channel(Server *server, const std::string &channel_name)
 	_channel_key = "";
 	_channel_mode = "nst";
 	_client_limit = std::numeric_limits<unsigned int>::max();
-	_client_number = 0;
 }
 
 // Getter
@@ -60,8 +58,6 @@ const std::map<int, Client *> &Channel::getOperators() const
 
 unsigned int Channel::getClientLimit() const { return _client_limit; }
 
-unsigned int Channel::getClientNumber() const { return _client_number; }
-
 // Setter
 void Channel::setChannelTopic(const std::string &channel_topic)
 {
@@ -95,30 +91,12 @@ void Channel::setClientLimit(unsigned int client_limit)
 	_client_limit = client_limit;
 }
 
-// void Channel::setClientNumber(unsigned int client_number) {
-//   _client_limit = client_number;
-// }
-
-bool Channel::increaseClientNumber()
-{
-	if (_client_number + 1 >= _client_limit) return false;
-	_client_number += 1;
-	return true;
-}
-
-bool Channel::decreaseClientNumber()
-{
-	_client_number -= 1;
-	if (_client_number <= 0) return false;
-	return true;
-}
-
-bool Channel::removeClient(int client_fd)
+void Channel::removeClient(int client_fd)
 {
 	// 클라이언트가 채널에 존재하는지 확인
 	std::map<int, Client *>::iterator it = _clients.find(client_fd);
 	if (it == _clients.end())
-		return false; // 클라이언트가 채널에 없음 (삭제 실패)
+		return;
 
 	// 클라이언트가 운영자인 경우 운영자 목록에서도 제거
 	removeOperator(client_fd);
@@ -126,35 +104,23 @@ bool Channel::removeClient(int client_fd)
 	// 클라이언트를 채널에서 제거
 	_clients.erase(it);
 
-	// 클라이언트 수 감소
-	decreaseClientNumber();
-
 	// 채널에 남은 클라이언트가 없으면 서버에 채널 삭제
 	if (_clients.empty())
 		_server->removeChannel(_channel_name);
-	return true;
 }
 
-bool Channel::removeOperator(int client_fd)
+void Channel::removeOperator(int client_fd)
 {
 	std::map<int, Client *>::iterator it = _operators.find(client_fd);
 	if (it != _operators.end())
-	{
 		_operators.erase(it);
-		return true;
-	}
-	return false; // 못찾음. (삭제 실패)
 }
 
-bool Channel::removeInvitedClient(int client_fd)
+void Channel::removeInvitedClient(int client_fd)
 {
 	std::map<int, Client *>::iterator it = _invited_clients.find(client_fd);
 	if (it != _invited_clients.end())
-	{
 		_invited_clients.erase(it);
-		return true;
-	}
-	return false; // 못찾음. (삭제 실패)
 }
 
 // 이거 쓴다음 꼭 _client_number 수 확인하기.
@@ -165,7 +131,6 @@ bool Channel::addClient(Client *client)
 	{
 		// 없다면
 		_clients[client->getFd()] = client;
-		increaseClientNumber();
 		return true;
 	}
 	return false; // 이미 해당하는 사람이 존재함.

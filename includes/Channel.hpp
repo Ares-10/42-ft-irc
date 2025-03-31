@@ -33,7 +33,6 @@ class Channel {
 
   Server *_server;
   unsigned int _client_limit;
-  unsigned int _client_number;
 
  public:
   Channel(Server *server, const std::string &channel_name);
@@ -67,13 +66,9 @@ class Channel {
   // void setClientNumber(unsigned int client_number); 이거 대신 inc, dec
   // 만들어야할듯.
 
-  bool increaseClientNumber();
-  bool decreaseClientNumber();
-
-  bool removeClient(int client_fd);    // client_fd // 이거 쓴다음 꼭
-                                       // _client_number 수 확인하기.
-  bool removeOperator(int client_fd);  // client_fd
-  bool removeInvitedClient(int client_fd);
+	void removeClient(int client_fd);
+	void removeOperator(int client_fd);
+	void removeInvitedClient(int client_fd);
 
   bool addInvitedClient(Client *client);
   bool addClient(Client *client);

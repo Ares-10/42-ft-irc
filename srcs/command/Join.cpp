@@ -89,8 +89,7 @@ void Join::execute() {
       // 초대되지 않았고, +l 옵션인 방의 최대 제한 수에 다다랐는가?
       else if (channel_ptr->findInvitedClient(_client->getFd()) == NULL &&
                channel_ptr->findChannelMode('l') &&
-               channel_ptr->getClientLimit() <=
-                   channel_ptr->getClientNumber()) {
+               channel_ptr->getClientLimit() <= channel_ptr->getClients().size()) {
         _client->write(
             ":" + _server->getServerName() + " " +
             Error::err_channelisfull(_client->getNickname(), _channels[i]));
