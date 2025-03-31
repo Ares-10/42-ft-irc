@@ -40,7 +40,7 @@ void Names::execute()  // channel_list부분 미완..
       {
         // 353 :  symbol부분은 '=' 공개 채널, '@' 는 secret channel인데 우린 +s
         // 옵션을 기본으로 생각했으므로 '@' 로 함.
-        std::string names_str = ":" + _server->getServerName() + " 353" +
+        std::string names_str = ":" + _server->getServerName() + " 353 " +
                                 _client->getNickname() + " @ " +
                                 (*it)->getChannelName() + " :";
         // // user 쭉 넣기.

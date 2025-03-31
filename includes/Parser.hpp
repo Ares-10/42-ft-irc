@@ -10,10 +10,9 @@ class Server;
 class Client;
 
 class Parser {
-public:
-	Command *parse(Client *client, Server *server, std::string message);
+ public:
+  Command *parse(Client *client, Server *server, std::string message);
+  static std::string trim(const std::string &str);
 };
 
-
-
-#endif //PARSER_HPP
+#endif  // PARSER_HPP

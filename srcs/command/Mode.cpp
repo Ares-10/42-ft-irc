@@ -39,7 +39,7 @@ void Mode::execute() {
   std::string mode_str;
   char prev_sign = 0;  // 이거 생각해보기.
   char curr_sign = '+';
-  int arg_idx = 3;
+  int arg_idx = 2;
 
   if (_args[1][0] == '-') {
     curr_sign = '-';
@@ -208,7 +208,7 @@ void Mode::execute() {
 
 void Mode::makeReturnStr(char &prev_sign, char curr_sign, char mode_c,
                          std::string &return_mode_str) {
-  if (prev_sign != curr_sign) {
+  if (prev_sign != curr_sign || return_mode_str.length() == 0) {
     return_mode_str += curr_sign;
     prev_sign = curr_sign;
   }

@@ -46,6 +46,7 @@ t_command to_command(std::string message) {
   size_t i = 0;
   size_t j = 0;
 
+  message = Parser::trim(message);
   if (message[i] == ' ' || !message[i]) {
     command._invalid_message = true;
     return (command);
@@ -78,4 +79,15 @@ t_command to_command(std::string message) {
   command._command = command._args[0];
   command._args.erase(command._args.begin());
   return (command);
+}
+
+std::string Parser::trim(const std::string &str) {
+  std::string::size_type start = 0, end = str.length();
+  while (start < end && std::isspace(str[start])) start++;
+  while (end > start && std::isspace(str[end - 1])) end--;
+  if (start >= end) {
+    if (str.length() == 1 && str[0] == ' ') return " ";
+    return "";
+  }
+  return str.substr(start, end - start);
 }
