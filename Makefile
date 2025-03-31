@@ -14,7 +14,6 @@ SRCS =  srcs/main.cpp				\
 		srcs/command/Notice.cpp		\
 		srcs/command/Part.cpp		\
 		srcs/command/Ping.cpp		\
-		srcs/command/Pong.cpp		\
 		srcs/command/PrivMsg.cpp	\
 		srcs/command/Quit.cpp		\
 		srcs/command/User.cpp		\

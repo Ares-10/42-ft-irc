@@ -29,8 +29,6 @@ Command *Parser::parse(Client *client, Server *server, std::string message) {
     command = new Kick();
   else if (cmd._command == "PING")
     command = new Ping();
-  else if (cmd._command == "PONG")
-    command = new Pong();
   else if (cmd._command == "MODE")
     command = new Mode();
   else if (cmd._command == "NAMES")

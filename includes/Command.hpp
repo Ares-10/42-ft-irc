@@ -116,12 +116,6 @@ public:
 	void execute();
 };
 
-class Pong : public Command
-{
-public:
-	void execute();
-};
-
 class Mode : public Command
 {
 private:
