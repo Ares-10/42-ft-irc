@@ -2,8 +2,8 @@
 
 send_commands() {
   echo "PASS 42"
-  echo "USER user_name * * :real_name"
   echo "NICK nick__name"
+ echo "USER user_name * * :real_name"
 }
 
 (
