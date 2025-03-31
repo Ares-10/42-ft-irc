@@ -8,20 +8,14 @@ void Topic::execute() {
 
   int format_opt = 0;
   Channel *channel_ptr = _server->findChannel(_args[0]);
-  if (!Channel::checkChannelNameFormat(_args[0], &format_opt) ||
-      channel_ptr == NULL) {  // 채널 양식이 틀렸거나, 채널 존재 x
+  if (!Channel::checkChannelNameFormat(_args[0], &format_opt) || channel_ptr == NULL) {  // 채널 양식이 틀렸거나, 채널 존재 x
     // 476은 join 만 해당하는 듯?
     // 403
-    return _client->write(
-        ":" + _server->getServerName() + " " +
-        Error::err_nosuchchannel(_client->getNickname(), _args[0]));
+    throw std::runtime_error(Error::err_nosuchchannel(_client->getNickname(), _args[0]));
   }
-  if (channel_ptr->findClient(_client->getFd()) == NULL ||
-      _client->findChannel(_args[0]) == NULL) {
+  if (channel_ptr->findClient(_client->getFd()) == NULL || _client->findChannel(_args[0]) == NULL) {
     // 442 channel에 client 없음.
-    return _client->write(
-        ":" + _server->getServerName() + " " +
-        Error::err_notonchannel(_client->getNickname(), _args[0]));
+    throw std::runtime_error(Error::err_notonchannel(_client->getNickname(), _args[0]));
   }
   if (_args.size() == 1) {  // channel의 topic정보 출력
     // channel의 topic 출력 2줄 있어야함.
@@ -45,9 +39,7 @@ void Topic::execute() {
         channel_ptr->findOperator(_client->getFd()) == NULL) {
       // +t 모드에서 operator가 아니라면
       // 482
-      return _client->write(
-          ":" + _server->getServerName() + " " +
-          Error::err_chanoprivsneeded(_client->getNickname(), _args[0]));
+      throw std::runtime_error(Error::err_chanoprivsneeded(_client->getNickname(), _args[0]));
     }
     // channel topic 수정.
     channel_ptr->setChannelTopic(_args[1]);
