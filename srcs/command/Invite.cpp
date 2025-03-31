@@ -27,8 +27,8 @@ void Invite::execute() {
     throw std::runtime_error(Error::err_badchanmask(_args[1]));
   }
   if (channel_ptr->findClient(_client->getFd()) == NULL ||
-      _client->findChannel(_args[0]) == NULL) {
-    // 442 channel에 client가 없음.
+      _client->findChannel(_args[1]) == NULL) {
+    // 442 channel에 client
     throw std::runtime_error(
         Error::err_notonchannel(_client->getNickname(), _args[1]));
   }
