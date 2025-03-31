@@ -3,12 +3,12 @@
 
 #include <sys/socket.h>
 
-#include <Server.hpp>
 #include <map>
 #include <string>
 #include <vector>
 
 #include "Channel.hpp"
+#include "Server.hpp"
 
 class Channel;
 
@@ -41,6 +41,7 @@ class Client {
   std::string getUsername() const;
   std::string getRealname() const;
   std::string getHostname() const;
+  std::string getClientName() const;
   std::string getId() const;
   ClientState getClientState() const;
   std::vector<std::string> getChannelNames() const;
@@ -52,8 +53,8 @@ class Client {
   void setId(const std::string &id);
   void setClientState(ClientState state);
 
-  // 나간 channel의 이름을 return // 둘다 미완
-  std::string quitChannel(const std::string &channel_name);
+  // 나간 channel의 이름을 return
+  bool quitChannel(const std::string &channel_name);
   void quitAllChannel();
 
   Channel *findChannel(const std::string &channel_name);  // 없으면 null 반환.

@@ -28,6 +28,10 @@ std::string Client::getRealname() const { return _realname; }
 
 std::string Client::getHostname() const { return _hostname; }
 
+std::string Client::getClientName() const {
+  return _nickname + "!~" + _username + "@" + _hostname;
+}
+
 std::string Client::getId() const { return _id; }
 
 ClientState Client::getClientState() const { return _state; }
@@ -53,7 +57,7 @@ void Client::setHostname(const std::string &hostname) { _hostname = hostname; }
 
 void Client::setId(const std::string &id) { _id = id; }
 
-std::string Client::quitChannel(const std::string &channel_name) {
+bool Client::quitChannel(const std::string &channel_name) {
   for (std::map<std::string, Channel *>::iterator it = _channels.begin();
        it != _channels.end(); it++) {
     if (it->second->getChannelName() == channel_name) {
@@ -63,14 +67,14 @@ std::string Client::quitChannel(const std::string &channel_name) {
       {
         temp->removeOperator(_fd);
         // 삭제 성공
-        // 구현 해야함.
+        return true;
       } else {
         std::cout << "quitChannel : " << channel_name
                   << " 삭제 실패 (해당하는 channel이 없음.)\n";
       }
     }
   }
-  return "";  // client가 해당 channel에 있지 않음.
+  return false;  // client가 해당 channel에 있지 않음.
 }
 
 void Client::quitAllChannel() {
@@ -82,7 +86,7 @@ void Client::quitAllChannel() {
     {
       temp->removeOperator(_fd);
       // 삭제 성공
-      // 구현 해야함.
+      // 구현 해야함. 아님 그냥 비워두거나..
     } else {
       std::cout << "quitAllChannel : " << temp->getChannelName()
                 << " 삭제 실패 (해당하는 channel이 없음.)\n";

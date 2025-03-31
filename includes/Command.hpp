@@ -5,7 +5,6 @@
 #include "Client.hpp"
 #include "Error.hpp"
 #include "Parser.hpp"
-#include "Reply.hpp"
 #include "Server.hpp"
 
 class Server;
@@ -38,6 +37,11 @@ class Notice : public Command {
 };
 
 class PrivMsg : public Command {
+ private:
+  // int 0 = client, 1 = channel, 2 = channel (only operator)
+  std::vector<std::pair<int, std::string> > _nick_channel_vec;
+  void makeClientChannelVec();
+
  public:
   void execute();
 };
@@ -81,6 +85,11 @@ class Pass : public Command {
 };
 
 class Kick : public Command {
+ private:
+  std::vector<std::string> _kickClientVec;
+
+  void makeClientVec(Channel *channel_ptr);
+
  public:
   void execute();
 };
@@ -96,11 +105,25 @@ class Pong : public Command {
 };
 
 class Mode : public Command {
+ private:
+  void makeReturnStr(char &prev_sign, char curr_sign, char mode_c,
+                     std::string &return_mode_str);
+
  public:
   void execute();
 };
 
 class Names : public Command {
+ public:
+  void execute();
+};
+
+class Topic : public Command {
+ public:
+  void execute();
+};
+
+class Invite : public Command {
  public:
   void execute();
 };

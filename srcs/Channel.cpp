@@ -2,7 +2,9 @@
 
 Channel::Channel(Server *server, Client *client,
                  const std::string &channel_name)
-    : _server(server), _channel_name(channel_name) {
+    : _server(server),
+      _channel_name(channel_name),
+      _channel_generate_time(server->getCurTime()) {
   _channel_topic = "";
   _channel_key = "";
   _channel_mode = "nst";
@@ -14,7 +16,9 @@ Channel::Channel(Server *server, Client *client,
 }
 
 Channel::Channel(Server *server, const std::string &channel_name)
-    : _server(server), _channel_name(channel_name) {
+    : _server(server),
+      _channel_name(channel_name),
+      _channel_generate_time(server->getCurTime()) {
   _channel_topic = "";
   _channel_key = "";
   _channel_mode = "nst";
@@ -152,33 +156,34 @@ bool Channel::addInvitedClient(Client *client) {
   return false;  // 이미 해당하는 사람이 존재함.
 }
 
-void Channel::removeChannelMode(const std::string &channel_mode) {
-  for (size_t i = 0; i < channel_mode.length(); i++) {
-    if (channel_mode[i] == 's' || channel_mode[i] == 'n') continue;
-    size_t idx = _channel_mode.find(channel_mode[i]);
-    if (idx != std::string::npos) {
-      // 있다면 지워라
-      _channel_mode.erase(idx);
-    }
+bool Channel::removeChannelMode(char channel_mode) {
+  if (channel_mode == 's' || channel_mode == 'n') return false;
+  size_t idx = _channel_mode.find(channel_mode);
+  if (idx != std::string::npos) {
+    // 있다면 지워라
+    _channel_mode.erase(idx);
+    return true;
   }
+  return false;
 }
 
-void Channel::addChannelMode(const std::string &channel_mode) {
-  for (size_t i = 0; i < channel_mode.length(); i++) {
-    size_t idx = _channel_mode.find(channel_mode[i]);
-    if (idx == std::string::npos) {
-      // 없다면 만들어라.
-      _channel_mode += channel_mode[i];
-    }
+bool Channel::addChannelMode(char channel_mode) {
+  if (!checkChannelModeFormat(channel_mode))
+    return false;  // i, k, o, l, t만 가능
+  size_t idx = _channel_mode.find(channel_mode);
+  if (idx == std::string::npos) {
+    // 없다면 만들어라.
+    _channel_mode += channel_mode;
+    return true;
   }
+  return false;
 }
 
-bool Channel::findChannelMode(const std::string &channel_mode) {
-  for (size_t i = 0; i < channel_mode.length(); i++) {
-    size_t idx = _channel_mode.find(channel_mode[i]);
-    if (idx != std::string::npos) {
-      return true;
-    }
+bool Channel::findChannelMode(char channel_mode) {
+  size_t idx = _channel_mode.find(channel_mode);
+  if (idx != std::string::npos) {
+    // 있다면 true
+    return true;
   }
   return false;
 }
@@ -191,6 +196,14 @@ Client *Channel::findInvitedClient(int client_fd) {
 Client *Channel::findClient(int client_fd) {
   std::map<int, Client *>::iterator it = _clients.find(client_fd);
   return (it != _clients.end()) ? it->second : NULL;
+}
+
+Client *Channel::findClientByNick(const std::string &nick_name) {
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); it++) {
+    if (it->second->getNickname() == nick_name) return it->second;
+  }
+  return NULL;
 }
 
 Client *Channel::findOperator(int client_fd) {
@@ -215,12 +228,28 @@ std::map<std::string, bool> Channel::getClientNamesWithPrefix() {
   return return_map;
 }
 
-bool Channel::checkChannelNameFormat(const std::string &channel_name) {
-  if (channel_name.length() < 1 || channel_name[0] != '#') return false;
-  for (size_t i = 1; i < channel_name.length(); i++) {
-    if (channel_name[i] == ' ' || !std::isprint(channel_name[i])) return false;
+// 이거 수정해야할듯. :떄문에, 첫 이름에 #오지 않을때와 " "와 같은 문자가
+// channel name으로 왔을떄 처리를 다르게 해야함.
+bool Channel::checkChannelNameFormat(const std::string &channel_name,
+                                     int *err_code) {
+  for (size_t i = 1; i < channel_name.length(); i++) {  // 479(476)
+    if (channel_name[i] == ' ' || channel_name[i] == ',' ||
+        !std::isprint(channel_name[i])) {
+      *err_code = 1;
+      return false;
+    }
   }
+  if (channel_name.length() < 1 || channel_name[0] != '#') {  // 403
+    *err_code = 2;
+    return false;
+  }
+  *err_code = 0;
   return true;
+}
+
+bool Channel::checkChannelModeFormat(char c) {
+  if (c == 'i' || c == 'k' || c == 'o' || c == 'l' || c == 't') return true;
+  return false;
 }
 
 // bool Channel::checkChannelKeyFormat(const std::string &channel_key) { // mode
