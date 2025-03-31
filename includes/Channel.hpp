@@ -12,6 +12,7 @@ class Client;
 
 class Channel {
  private:
+  Server *_server;
   std::string _channel_name;   // channel name
   std::string _channel_topic;  // topic (info) // :은 뺴고 저장한다고 가정.
   std::string _channel_key;    // channel passwd
@@ -31,7 +32,6 @@ class Channel {
   std::map<int, Client *> _clients;    // channel client
   std::map<int, Client *> _operators;  // channel operator
 
-  Server *_server;
   unsigned int _client_limit;
 
  public:
@@ -66,9 +66,9 @@ class Channel {
   // void setClientNumber(unsigned int client_number); 이거 대신 inc, dec
   // 만들어야할듯.
 
-	void removeClient(int client_fd);
-	void removeOperator(int client_fd);
-	void removeInvitedClient(int client_fd);
+  void removeClient(int client_fd);
+  void removeOperator(int client_fd);
+  void removeInvitedClient(int client_fd);
 
   bool addInvitedClient(Client *client);
   bool addClient(Client *client);
@@ -94,7 +94,7 @@ class Channel {
   // static bool checkChannelKeyFormat(const std::string &channel_name); // mode
   // +k 일 때
 
-	void broadcastMessage(const std::string &message, Client *excludeClient);
+  void broadcastMessage(const std::string &message, Client *excludeClient);
 };
 
 #endif  // CHANNEL_HPP

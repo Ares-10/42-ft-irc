@@ -50,9 +50,10 @@ void Names::execute()  // channel_list부분 미완..
              it != user_map.end(); it++) {
           if (it->second == true)  // operator
             names_str += "@";
-          names_str += it->first;
-          if (std::next(it) != user_map.end()) names_str += " ";
+          names_str += it->first + " ";
         }
+        if (names_str.length() > 0)
+          names_str = names_str.substr(0, names_str.length() - 1);
         _client->write(names_str);
       }
     }

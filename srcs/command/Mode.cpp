@@ -3,8 +3,9 @@
 void Mode::execute() {
   if (_client->getClientState() != REGISTERED)
     throw std::runtime_error(Error::err_notregistered(_client->getNickname()));
-  if (_args.size() < 1) // 461 mode 만 왔을 경우
-    throw std::runtime_error(Error::err_needmoreparams(_client->getNickname(), _command));
+  if (_args.size() < 1)  // 461 mode 만 왔을 경우
+    throw std::runtime_error(
+        Error::err_needmoreparams(_client->getNickname(), _command));
 
   int format_opt = 0;
   Channel *channel_ptr = _server->findChannel(_args[0]);
@@ -39,7 +40,7 @@ void Mode::execute() {
   std::string mode_str;
   char prev_sign = 0;  // 이거 생각해보기.
   char curr_sign = '+';
-  int arg_idx = 2;
+  size_t arg_idx = 2;
 
   if (_args[1][0] == '-') {
     curr_sign = '-';
