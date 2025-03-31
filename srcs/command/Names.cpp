@@ -60,12 +60,11 @@ void Names::execute()  // channel_list부분 미완..
   // 366
   std::string return_str =
       ":" + _server->getServerName() + " 366 " + _client->getNickname() + " ";
-  if (channel_vec.size() == 0)
+  if (channel_vec.empty())
     return_str += ":End of /NAMES list";
-  else if (channel_vec.size() == 1) {
+  else if (channel_vec.size() == 1)
     return_str += channel_vec[0]->getChannelName() + " :End of /NAMES list.";
-  } else
+  else
     return_str += "* :End of /NAMES list";
   _client->write(return_str);
-  return;
 }
