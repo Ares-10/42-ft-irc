@@ -48,6 +48,7 @@ t_command to_command(std::string message) {
   size_t i = 0;
   size_t j = 0;
 
+  command._invalid_message = false;
   message = Parser::trim(message);
   if (message[i] == ' ' || !message[i]) {
     command._invalid_message = true;
