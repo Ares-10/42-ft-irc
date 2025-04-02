@@ -7,9 +7,18 @@ Command *Parser::parse(Client *client, Server *server, std::string message) {
   Command *command;
 
   cmd = to_command(message);
-  if (cmd._invalid_message)
+  std::cout << "command is : " << cmd._command << std::endl;
+  for (std::vector<std::string>::iterator it = cmd._args.begin();
+       it != cmd._args.end(); it++) {
+    std::cout << "||" << *it << "||";
+  }
+  std::cout << std::endl;
+
+  if (cmd._invalid_message) {
+    std::cout << "command is invalid message\n";
     return NULL;
-  else if (cmd._command == "NOTICE")
+
+  } else if (cmd._command == "NOTICE")
     command = new Notice();
   else if (cmd._command == "PRIVMSG")
     command = new PrivMsg();
@@ -38,7 +47,10 @@ Command *Parser::parse(Client *client, Server *server, std::string message) {
   else if (cmd._command == "TOPIC")
     command = new Topic();
   else  // 잘못된 명령어 오류처리 필요
+  {
+    std::cout << "command is invalid message\n";
     return NULL;
+  }
   command->setCommand(client, server, cmd);
   return command;
 }
@@ -50,14 +62,19 @@ t_command to_command(std::string message) {
 
   command._invalid_message = false;
   message = Parser::trim(message);
+  std::cout << command._invalid_message << std::endl;
+  command._invalid_message = 0;
   if (message[i] == ' ' || !message[i]) {
     command._invalid_message = true;
+    std::cout << " 1 " << std::endl;
     return (command);
   }
   j = i;
   while (message[i]) {
     if (message[i] == ' ') {
       if (message[i + 1] == ' ') {
+        std::cout << " 2 " << std::endl;
+
         command._invalid_message = true;
         return (command);
       }
@@ -67,6 +84,8 @@ t_command to_command(std::string message) {
     }
     if (message[i] == ':') {
       if (message[i - 1] != ' ') {
+        std::cout << " 3 " << std::endl;
+
         command._invalid_message = true;
         return (command);
       }
