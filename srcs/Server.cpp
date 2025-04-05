@@ -65,6 +65,7 @@ void Server::handleClient(int fd) {
         break;
       }
     }
+    removeClient(_clients[fd]);
 
     // 클라이언트 객체 정리
     _clientBuffers.erase(fd);
