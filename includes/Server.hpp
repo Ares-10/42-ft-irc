@@ -35,6 +35,8 @@ class Server {
   std::map<int, Client *> _clients;
   std::map<std::string, Channel *> _channels;  // key : channel_name
 
+	std::map<int, std::string> _clientBuffers; // fd별 메시지 버퍼 저장
+
   std::vector<std::string> _client_nicknames;
 
   std::string _server_name;

@@ -55,30 +55,54 @@ void Server::run() {
 void Server::handleClient(int fd) {
   char buffer[512];
   int bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
+
   if (bytes <= 0) {
+    // 클라이언트 연결 종료 처리
     close(fd);
-    for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end();
-         ++it) {
+    for (std::vector<pollfd>::iterator it = _pfds.begin(); it != _pfds.end(); ++it) {
       if (it->fd == fd) {
         _pfds.erase(it);
         break;
       }
     }
+
+    // 클라이언트 객체 정리
+    _clientBuffers.erase(fd);
+
+    // Client 객체 메모리 해제
+    if (_clients.find(fd) != _clients.end()) {
+      delete _clients[fd]; // Client 객체 삭제
+      _clients.erase(fd);  // 맵에서 제거
+    }
+
     std::cout << "Client disconnected" << std::endl;
   } else {
     buffer[bytes] = '\0';
-    std::cout << "Received [Client(" << _clients[fd]->getNickname()
-              << ")]: " << buffer;
-    std::string input(buffer);
-    std::istringstream stream(input);
-    std::string line;
+    std::cout << "Received [Client(" << _clients[fd]->getNickname() << ")]: " << buffer;
 
-    while (std::getline(stream, line)) {
+    // 이전 버퍼에 새 데이터 추가
+    _clientBuffers[fd] += buffer;
+
+    // 개행 문자 위치 찾기
+    size_t pos = 0;
+    std::string& clientBuffer = _clientBuffers[fd];
+
+    while ((pos = clientBuffer.find('\n')) != std::string::npos) {
+      // 완전한 명령어 추출
+      std::string line = clientBuffer.substr(0, pos);
+
+      // 버퍼에서 처리된 부분 제거
+      clientBuffer.erase(0, pos + 1);
+
+      // 명령어 처리
       if (!line.empty()) {
         try {
           if (line[line.length() - 1] == '\r') line.erase(line.end() - 1);
           Command *cmd = _parser->parse(_clients[fd], this, line);
-          if (cmd != NULL) cmd->execute();
+          if (cmd != NULL) {
+            cmd->execute();
+            delete cmd; // Command 객체 삭제
+          }
         } catch (std::exception &e) {
           this->sendMessage(_clients[fd], e.what());
         }
