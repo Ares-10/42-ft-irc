@@ -66,7 +66,9 @@ void Server::handleClient(int fd) {
         break;
       }
     }
+    Client *temp_client = _clients[fd];
     removeClient(_clients[fd]);
+    delete temp_client;
 
     // 클라이언트 객체 정리
     _clientBuffers.erase(fd);
