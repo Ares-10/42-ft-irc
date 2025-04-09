@@ -101,15 +101,17 @@ void Server::handleClient(int fd) {
 
       // 명령어 처리
       if (!line.empty()) {
+        Command *cmd;
         try {
           if (line[line.length() - 1] == '\r') line.erase(line.end() - 1);
-          Command *cmd = _parser->parse(_clients[fd], this, line);
+          cmd = _parser->parse(_clients[fd], this, line);
           if (cmd != NULL) {
             cmd->execute();
             delete cmd;  // Command 객체 삭제
           }
         } catch (std::exception &e) {
           this->sendMessage(_clients[fd], e.what());
+          delete cmd;
         }
       }
     }
